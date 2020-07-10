@@ -78,7 +78,6 @@ export default {
 </script>
 <style lang='scss' scoped>
   .stationManage {
-    margin-left: 230px;
     padding: 30px 20px;
     .el-row {
       .el-col {

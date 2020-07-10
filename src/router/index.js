@@ -3,147 +3,162 @@ import Router from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.use(Router)
 
 // 基本数据管理
 const Login = () => import('@/views/login.vue')
 
-// 基本数据管理
+// 用户管理
 const Home = () => import('@/views/Home.vue')
 
-// 学校管理
-const schoolManage = () => import('@/views/dataManage/schoolManage.vue')
-
-// 学段管理
-const periodManage = () => import('@/views/dataManage/periodManage.vue')
-
-// 学期管理
-const termManage = () => import('@/views/dataManage/termManage.vue')
-
-// 年级管理
-const gradeManage = () => import('@/views/dataManage/gradeManage.vue')
+// 学段
+const centerUser = () => import('@/views/userManage/centerUser.vue')
 
 // 班级管理
-const classManage = () => import('@/views/dataManage/classManage.vue')
-
-// 班级管理
-const studentManage = () => import('@/views/dataManage/studentManage.vue')
-
-// 班级管理
-const stationManage = () => import('@/views/dataManage/stationManage.vue')
+const studentUser = () => import('@/views/userManage/studentUser.vue')
 
 // 内容管理
 // 文章管理
 const articleManage = () => import('@/views/articleManage/index.vue')
 
-// 文章审核
-const articleExamine = () => import('@/views/articleManage/articleExamine.vue')
+// 文章发布
+const articleRelease = () => import('@/views/articleManage/articleRelease.vue')
+
+// 栏目设置
+const column = () => import('@/views/articleManage/column.vue')
 
 // 组织架构
-const structure = () => import('@/views/structure')
+const activity = () => import('@/views/activity')
 
-// 应用管理
-const applyManage = () => import('@/views/applyManage')
+// 分享管理
+const shareManage = () => import('@/views/shareManage')
+
+// 举报管理
+const reportManage = () => import('@/views/reportManage')
 
 const routes = [
   // 基础数据管理
   {
     path: '/',
-    redirect: '/home/schoolManage',
+    redirect: '/centerUser',
     name: 'home',
     component: Home,
-    meta: { isNav: true, title: '基础数据管理' },
+    meta: { isNav: true, title: '用户管理' },
     children: [
+      // {
+      //   path: '/home/schoolManage',
+      //   name: 'schoolManage',
+      //   component: schoolManage,
+      //   meta: { hidden: true, title: '学校管理' }
+      // },
       {
-        path: '/home/schoolManage',
-        name: 'schoolManage',
-        component: schoolManage,
-        meta: { hidden: true, title: '学校管理' }
+        path: '/centerUser',
+        name: 'centerUser',
+        component: centerUser,
+        meta: { hidden: true, title: '中心用户' }
       },
       {
-        path: '/home/periodManage',
-        name: 'periodManage',
-        component: periodManage,
-        meta: { hidden: true, title: '学段管理' }
-      },
-      {
-        path: '/home/termManage',
-        name: 'termManage',
-        component: termManage,
-        meta: { hidden: true, title: '学期管理' }
-      },
-      {
-        path: '/home/gradeManage',
-        name: 'gradeManage',
-        component: gradeManage,
-        meta: { hidden: true, title: '年级管理' }
-      },
-      {
-        path: '/home/classManage',
-        name: 'classManage',
-        component: classManage,
-        meta: { hidden: true, title: '班级管理' }
-      },
-      {
-        path: '/home/studentManage',
-        name: 'studentManage',
-        component: studentManage,
-        meta: { hidden: true, title: '学生管理' }
-      },
-      {
-        path: '/home/stationManage',
-        name: 'stationManage',
-        component: stationManage,
-        meta: { hidden: true, title: '岗位管理' }
+        path: '/studentUser',
+        name: 'studentUser',
+        component: studentUser,
+        meta: { hidden: true, title: '学生用户' }
       }
-    ]
-  },
-
-  // 组织架构
-  {
-    path: '/structure',
-    component: Home,
-    meta: { isNav: false, title: '组织架构' },
-    children: [
-      {
-        path: '/structure',
-        name: 'structure',
-        component: structure,
-        meta: { hidden: true, title: '组织架构' }
-      }
+      // {
+      //   path: '/home/termManage',
+      //   name: 'termManage',
+      //   component: termManage,
+      //   meta: { hidden: true, title: '学期管理' }
+      // },
+      // {
+      //   path: '/home/gradeManage',
+      //   name: 'gradeManage',
+      //   component: gradeManage,
+      //   meta: { hidden: true, title: '年级管理' }
+      // },
+      // {
+      //   path: '/home/classManage',
+      //   name: 'classManage',
+      //   component: classManage,
+      //   meta: { hidden: true, title: '班级管理' }
+      // },
+      // {
+      //   path: '/home/stationManage',
+      //   name: 'stationManage',
+      //   component: stationManage,
+      //   meta: { hidden: true, title: '岗位管理' }
+      // }
     ]
   },
   // 内容管理
   {
-    path: '/home/articleManagess',
+    path: '/articleManagess',
     component: Home,
-    meta: { isNav: true, title: '内容管理' },
+    meta: { isNav: true, title: '文章管理' },
     children: [
       {
-        path: '/home/articleManage',
+        path: '/articleManage',
         name: 'articleManage',
         component: articleManage,
-        meta: { hidden: true, title: '文章管理' }
+        meta: { hidden: true, title: '文章列表' }
       },
       {
-        path: '/home/articleExamine',
-        name: 'articleExamine',
-        component: articleExamine,
-        meta: { hidden: true, title: '文章审核' }
+        path: '/articleRelease',
+        name: 'articleRelease',
+        component: articleRelease,
+        meta: { hidden: false, title: '文章发布' }
+      },
+      {
+        path: '/column',
+        name: 'column',
+        component: column,
+        meta: { hidden: true, title: '栏目设置' }
       }
     ]
   },
-  // 应用管理
+  // 活动设置
   {
-    path: '/applyManage',
+    path: '/activitys',
     component: Home,
-    meta: { isNav: false, title: '应用管理' },
+    meta: { isNav: false, title: '活动设置' },
     children: [
       {
-        path: '/applyManage',
-        name: 'applyManage',
-        component: applyManage,
-        meta: { hidden: true, title: '应用管理' }
+        path: '/activity',
+        name: 'activity',
+        component: activity,
+        meta: { hidden: true, title: '活动设置' }
+      }
+    ]
+  },
+  // 分享管理
+  {
+    path: '/shareManages',
+    component: Home,
+    meta: { isNav: false, title: '分享管理' },
+    children: [
+      {
+        path: '/shareManage',
+        name: 'shareManage',
+        component: shareManage,
+        meta: { hidden: true, title: '分享管理' }
+      }
+    ]
+  },
+  // 举报管理
+  {
+    path: '/reportManage',
+    component: Home,
+    meta: { isNav: false, title: '举报管理' },
+    children: [
+      {
+        path: '/reportManage',
+        name: 'reportManage',
+        component: reportManage,
+        meta: { hidden: true, title: '举报管理' }
       }
     ]
   },

@@ -54,7 +54,6 @@ export default {
       this.show = !this.show
     },
     router (data) {
-      // console.log(data)
       this.$router.push(data.path)
     }
   },
@@ -99,6 +98,11 @@ export default {
             margin: 15px 0;
           }
         }
+      }
+    }
+    .menu-content {
+      .el-menu {
+        border-right: 1px solid #324157;
       }
     }
   }

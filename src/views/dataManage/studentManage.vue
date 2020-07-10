@@ -136,7 +136,6 @@ export default {
 </script>
 <style lang='scss' scoped>
   .studentManage {
-    margin-left: 230px;
     padding: 30px 20px;
     .el-row {
       .el-col {

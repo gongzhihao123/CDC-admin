@@ -1,7 +1,9 @@
 <template>
   <div class="Home">
     <Menu></Menu>
-    <router-view></router-view>
+    <div class="home-container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 <script>
@@ -12,6 +14,16 @@ export default {
   },
   components: {
     Menu
-  }
+  },
+  mounted () {}
 }
 </script>
+<style lang="scss" scoped>
+.Home {
+  padding-left: 230px;
+  .home-container {
+    background: #F2F2F2;
+    height: 100vh;
+  }
+}
+</style>

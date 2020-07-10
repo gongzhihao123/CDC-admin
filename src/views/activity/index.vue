@@ -395,7 +395,6 @@ export default {
 
 <style lang="scss" scoped>
   .structure {
-    margin-left: 230px;
     padding: 30px 20px;
   }
 </style>
