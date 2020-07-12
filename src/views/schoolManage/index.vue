@@ -1,13 +1,13 @@
 <template>
-  <div class="activityManage">
+  <div class="schoolManage">
     <div class="containerTitle">
-      活动设置
+      中心用户
     </div>
-    <div class="activityManage-container">
+    <div class="schoolManage-container">
       <!-- 搜索表头 -->
       <el-row>
         <el-col>
-          <el-button type="primary" size="small" @click="$router.push('/activityRelease')">发布活动</el-button>
+          <el-button type="primary" size="small">添加学校</el-button>
         </el-col>
       </el-row>
   <!-- 表格主体 -->
@@ -40,11 +40,10 @@
               fixed="right"
               label="操作">
               <template slot-scope="scope">
-                <el-button size="small" type="primary" @click="viewStatistics(scope.row)">查看统计</el-button>
                 <el-button size="small" type="primary" @click="handleClick(scope.row)">编辑</el-button>
-                <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
+                <!-- <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
                   <el-button slot="reference" size="small" type="danger">删除</el-button>
-                </el-popconfirm>
+                </el-popconfirm> -->
               </template>
             </el-table-column>
           </el-table>
@@ -76,7 +75,7 @@ export default {
       currentPage2: 5,
       currentPage3: 5,
       currentPage4: 4,
-      activityDialogVisible: false
+      schoolDialogVisible: false
     }
   },
   methods: {
@@ -88,25 +87,21 @@ export default {
     },
     handleClick (item) {
       console.log(item)
-      this.activityDialogVisible = true
+      this.schoolDialogVisible = true
     },
-    delPlan () {},
-    // 查看统计跳转
-    viewStatistics () {
-      this.$router.push('/activityDetail')
-    }
+    delPlan () {}
   }
 }
 </script>
 <style lang="scss">
-.activityManage {
+.schoolManage {
   padding: 30px 20px;
   .containerTitle {
     border-left: 4px solid rgb(9, 98, 201);
     padding-left: 5px;
     margin-bottom: 10px;
   }
-  .activityManage-container {
+  .schoolManage-container {
     padding: 12px;
     background: #fff;
     .content {
@@ -118,12 +113,12 @@ export default {
           th {
             background-color: #e0e0e0;
             .cell {
-              text-align: activity;
+              text-align: school;
             }
           }
         }
         td {
-          text-align: activity;
+          text-align: school;
           .el-popover__reference {
             margin-left: 10px;
           }
@@ -131,7 +126,7 @@ export default {
       }
     }
     .el-pagination {
-      text-align: activity;
+      text-align: school;
     }
   }
 }

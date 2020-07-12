@@ -1,24 +1,28 @@
 <template>
-  <div class="articleRelease">
+  <div class="activityRelease">
     <div class="containerTitle">
-      <span @click="backArticleManage">文章管理</span> >> 文章发布
+      <span @click="backActivityManage">活动设置</span> >> 活动发布
     </div>
-    <div class="articleRelease-container">
-      <ul class="articleReleaseContent">
+    <div class="activityRelease-container">
+      <ul class="activityReleaseContent">
         <li>
-          <span>文章标题:</span>
-          <el-input v-model="articleTitle" clearable placeholder="请输入内容"></el-input>
+          <span>活动标题:</span>
+          <el-input v-model="activityTitle" clearable placeholder="请输入内容"></el-input>
         </li>
         <li>
-          <span>所属栏目:</span>
-          <el-checkbox-group v-model="columnCheck">
-            <el-checkbox label="1">首页</el-checkbox>
-            <el-checkbox label="2">防近视栏目</el-checkbox>
-            <el-checkbox label="3">控肥胖栏目</el-checkbox>
-          </el-checkbox-group>
+          <span>活动起止时间:</span>
+          <el-date-picker
+            v-model="timeRange"
+            type="datetimerange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right">
+          </el-date-picker>
         </li>
         <li>
-          <span>缩略图</span>
+          <span>活动宣传图片:</span>
           <el-upload
             action="#"
             list-type="picture-card"
@@ -52,43 +56,56 @@
                 </span>
               </div>
           </el-upload>
-          <el-dialog :visible.sync="articleDialog" class="articleReleaseDialog">
-            <img width="100%" :src="articleImg" alt="">
+          <el-dialog :visible.sync="activityDialog" class="activityReleaseDialog">
+            <img width="100%" :src="activityImg" alt="">
           </el-dialog>
         </li>
-        <li>
-          <span>内容:</span>
-          <div>
-            <mavon-editor v-model="content" ref="md" @imgAdd="$imgAdd" @change="change" style="min-height: 400px" />
-            <!-- <el-button size="small" @click="submit">提交</el-button> -->
-          </div>
-        </li>
       </ul>
-      <div class="articleReleaseFoot">
+      <div class="activityReleaseFoot">
         <el-button type="success" size="small">发布</el-button>
-        <el-button size="small" @click="backArticleManage">返回</el-button>
+        <el-button size="small" @click="backActivityManage">返回</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mavonEditor } from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
 export default {
   data () {
     return {
-      articleTitle: '',
+      activityTitle: '',
       columnCheck: [],
-      articleImg: '',
-      articleDialog: false,
+      activityImg: '',
+      activityDialog: false,
       fileList: [],
-      content: '', // 输入的markdown
-      html: '', // 及时转的html,
-      configs: {}
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      timeRange: []
     }
-  },
-  components: {
-    mavonEditor
   },
   methods: {
     // 上传操作
@@ -96,42 +113,21 @@ export default {
       console.log(file, fileList)
     },
     handlePictureCardPreview (file) {
-      this.articleImg = file.url
-      this.articleDialog = true
+      this.activityImg = file.url
+      this.activityDialog = true
     },
     handleDownload (file) {
       console.log(file)
     },
-    // 将图片上传到服务器，返回地址替换到md中
-    $imgAdd (pos, $file) {
-      let formdata = new FormData()
-
-      this.$upload.post('/上传接口地址', formdata).then(res => {
-        console.log(res.data)
-        this.$refs.md.$img2Url(pos, res.data)
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    // 所有操作都会被解析重新渲染
-    change (value, render) {
-      // render 为 markdown 解析后的结果[html]
-      this.html = render
-    },
-    // 提交
-    submit () {
-      console.log(this.content)
-      console.log(this.html)
-    },
     // 返回文章管理
-    backArticleManage () {
-      this.$router.push('/articleManage')
+    backActivityManage () {
+      this.$router.push('/activityManage')
     }
   }
 }
 </script>
 <style lang="scss">
-.articleRelease {
+.activityRelease {
   padding: 30px 20px;
   .containerTitle {
     border-left: 4px solid rgb(9, 98, 201);
@@ -142,17 +138,19 @@ export default {
       cursor: pointer;
     }
   }
-  .articleRelease-container {
+  .activityRelease-container {
     padding: 32px;
     background: #fff;
-    .articleReleaseContent {
+    .activityReleaseContent {
       li {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
         > span {
           display: inline-block;
-          width: 80px;
+          width: 120px;
+          text-align: right;
+          margin-right: 10px;
         }
         .el-upload--picture-card {
           width: 100px;
@@ -174,7 +172,7 @@ export default {
         > div {
           display: flex;
         }
-        .articleReleaseDialog {
+        .activityReleaseDialog {
           .el-dialog__body {
             padding: 0;
           }
@@ -189,7 +187,7 @@ export default {
         }
       }
     }
-    .articleReleaseFoot {
+    .activityReleaseFoot {
       margin-left: 200px;
       .el-button {
         width: 100px;

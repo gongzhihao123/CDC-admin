@@ -94,33 +94,9 @@ export default {
   }
 }
 </script>
-<style lang='scss' scoped>
-  .centerManage {
-    padding: 30px 20px;
-    .el-row {
-      .el-col {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .header-search {
-          .el-select {
-            width: 150px;
-            .el-input {
-              width: 150px;
-              margin: auto;
-            }
-          }
-          .el-input {
-            width: 220px;
-            margin: 0 10px;
-          }
-        }
-      }
-    }
-  }
-</style>
 <style lang="scss">
 .centerManage {
+  padding: 30px 20px;
   .containerTitle {
     border-left: 4px solid rgb(9, 98, 201);
     padding-left: 5px;

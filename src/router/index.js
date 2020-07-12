@@ -32,8 +32,14 @@ const articleRelease = () => import('@/views/articleManage/articleRelease.vue')
 // 栏目设置
 const column = () => import('@/views/articleManage/column.vue')
 
-// 组织架构
+// 活动设置
 const activity = () => import('@/views/activity')
+
+// 活动发布
+const activityRelease = () => import('@/views/activity/activityRelease')
+
+// 活动详情
+const activityDetail = () => import('@/views/activity/activityDetail')
 
 // 分享管理
 const shareManage = () => import('@/views/shareManage')
@@ -122,7 +128,7 @@ const routes = [
   },
   // 活动设置
   {
-    path: '/activitys',
+    path: '/activity',
     component: Home,
     meta: { isNav: false, title: '活动设置' },
     children: [
@@ -131,6 +137,18 @@ const routes = [
         name: 'activity',
         component: activity,
         meta: { hidden: true, title: '活动设置' }
+      },
+      {
+        path: '/activityRelease',
+        name: 'activityRelease',
+        component: activityRelease,
+        meta: { hidden: false, title: '活动发布' }
+      },
+      {
+        path: '/activityDetail',
+        name: 'activityDetail',
+        component: activityDetail,
+        meta: { hidden: false, title: '活动详情' }
       }
     ]
   },
