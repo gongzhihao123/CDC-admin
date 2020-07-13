@@ -5,26 +5,46 @@
     </div>
     <div class="schoolAddLabel">
       <ul>
-        <li @click="changeLabel">
+        <li @click="changeLabel(1)" :class="activeNum === 1 ? 'labelActive' : ''">
           <span>1</span>
           <p>学校/校区设置</p>
         </li>
-        <li @click="changeLabel">
+        <li @click="changeLabel(2)" :class="activeNum === 2 ? 'labelActive' : ''">
           <span>2</span>
           <p>年级设置</p>
         </li>
-        <li @click="changeLabel">
+        <li @click="changeLabel(3)" :class="activeNum === 3 ? 'labelActive' : ''">
           <span>3</span>
           <p>班级设置</p>
         </li>
       </ul>
     </div>
+    <div class="schoolAdd-container">
+      <schoolSet v-if="activeNum === 1"></schoolSet>
+      <gradeSet v-if="activeNum === 2"></gradeSet>
+      <classSet v-if="activeNum === 3"></classSet>
+    </div>
   </div>
 </template>
 <script>
+import schoolSet from './../../components/schoolManage/schoolSet'
+import gradeSet from './../../components/schoolManage/gradeSet'
+import classSet from './../../components/schoolManage/classSet'
 export default {
   data () {
-    return {}
+    return {
+      activeNum: 3
+    }
+  },
+  components: {
+    schoolSet,
+    gradeSet,
+    classSet
+  },
+  methods: {
+    changeLabel (res) {
+      this.activeNum = res
+    }
   }
 }
 </script>
@@ -67,7 +87,17 @@ export default {
           font-weight: 600;
         }
       }
+      .labelActive {
+        span {
+          background: cornflowerblue;
+        }
+      }
     }
+  }
+  .schoolAdd-container {
+    margin-top: 20px;
+    background: #fff;
+    padding: 30px 0;
   }
 }
 </style>

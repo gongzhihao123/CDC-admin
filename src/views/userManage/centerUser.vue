@@ -73,9 +73,6 @@ export default {
         { date: '2016-05-01', name: '王小虎', address: '上海市普陀区金沙江路 1519 弄' }],
       // 分页
       currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
       centerDialogVisible: false
     }
   },

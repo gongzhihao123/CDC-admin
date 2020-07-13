@@ -47,6 +47,7 @@ export default {
     return {
       value: '',
       options: [],
+      tableData: [{ name: '1', id: 2 }, { name: '2', id: 2 }],
       likeFlag: false
     }
   },
