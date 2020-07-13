@@ -15,7 +15,7 @@
       <div class="content">
         <el-table
           :data="tableData"
-          :span-method="objectSpanMethod"
+          :span-method="cellMerge"
           border
           style="width: 100%; margin-top: 20px">
           <el-table-column
@@ -54,7 +54,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
+        :current-page="currentPage"
         :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
@@ -76,13 +76,13 @@ export default {
           amount2: '3.2',
           amount3: 10
         }, {
-          id: '12987123',
+          id: '12987122',
           name: '王小虎',
           amount1: '165',
           amount2: '4.43',
           amount3: 12
         }, {
-          id: '12987124',
+          id: '12987122',
           name: '王小虎',
           amount1: '324',
           amount2: '1.9',
@@ -101,11 +101,10 @@ export default {
           amount3: 15
         }],
       // 分页
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
-      schoolDialogVisible: false
+      currentPage: 5,
+      schoolDialogVisible: false,
+      spanArr: [],
+      position: 0
     }
   },
   methods: {
@@ -134,9 +133,38 @@ export default {
           }
         }
       }
+    },
+    getSpanArr (data) {
+      this.spanArr = [] // 避免表格错乱！
+      data.forEach((item, index) => {
+        if (index === 0) {
+          this.spanArr.push(1)
+          this.position = 0
+        } else {
+          if (data[index].id === data[index - 1].id) { // 这里是要合并行
+            this.spanArr[this.position] += 1
+            this.spanArr.push(0)
+          } else {
+            this.spanArr.push(1)
+            this.position = index
+          }
+        }
+      })
+    },
+    cellMerge ({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) { // 对第一列进行合并
+        const _row = this.spanArr[rowIndex]
+        const _col = _row > 0 ? 1 : 0
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
     }
   },
-  mounted () {}
+  mounted () {
+    this.getSpanArr(this.tableData)
+  }
 }
 </script>
 <style lang="scss">
