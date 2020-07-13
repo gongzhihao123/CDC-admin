@@ -8,6 +8,24 @@
       <el-row>
         <el-col>
           <el-button type="primary" size="small" @click="$router.push('/articleRelease')">文章发布</el-button>
+          <div>
+            <!-- 栏目选择 -->
+            <el-select v-model="value" clearable placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <!-- 输入框 -->
+            <el-input
+              placeholder="请输入内容"
+              v-model="keyword"
+              clearable>
+            </el-input>
+            <el-button type="primary" size="small">搜索</el-button>
+          </div>
         </el-col>
       </el-row>
       <!-- 表格主体 -->
@@ -29,8 +47,11 @@
             fixed="right"
             label="操作">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="danger" >删除</el-button>
-              <el-button type="primary" @click="handleClick(scope.row)">编辑</el-button>
+              <el-button size="small" @click="navArticleDetail(scope.row)">查看</el-button>
+              <el-button type="primary" size="small" @click="handleClick(scope.row)">编辑</el-button>
+              <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='handleClick(scope.row)'>
+                <el-button slot="reference" size="small" type="danger">删除</el-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -52,7 +73,10 @@ export default {
   data () {
     return {
       currentPage: 1,
-      tableData: []
+      tableData: [{ name: 1 }],
+      options: [],
+      value: '',
+      keyword: ''
     }
   },
   methods: {
@@ -65,6 +89,10 @@ export default {
     handleClick (item) {
       console.log(item)
       this.centerDialogVisible = true
+    },
+    // 查看详情
+    navArticleDetail () {
+      this.$router.push('/articleDetail')
     }
   }
 }
@@ -80,6 +108,21 @@ export default {
   .articleManage-container {
     padding: 12px;
     background: #fff;
+    .el-row {
+      .el-col {
+        display: flex;
+        justify-content: space-between;
+        > div {
+          display: flex;
+          .el-select {
+            width: 300px;
+          }
+          .el-input {
+            margin: 0 10px;
+          }
+        }
+      }
+    }
     .content {
       margin: 20px 0;
       .el-table {

@@ -16,6 +16,12 @@ const Login = () => import('@/views/login.vue')
 // 用户管理
 const Home = () => import('@/views/Home.vue')
 
+// 学校设置
+const schoolManage = () => import('@/views/schoolManage')
+
+// 学校添加
+const schoolAdd = () => import('@/views/schoolManage/schoolAdd')
+
 // 学段
 const centerUser = () => import('@/views/userManage/centerUser.vue')
 
@@ -29,9 +35,13 @@ const articleManage = () => import('@/views/articleManage/index.vue')
 // 文章发布
 const articleRelease = () => import('@/views/articleManage/articleRelease.vue')
 
+// 文章详情
+const articleDetail = () => import('@/views/articleManage/articleDetail.vue')
+
 // 栏目设置
 const column = () => import('@/views/articleManage/column.vue')
 
+// 活动设置
 // 活动设置
 const activity = () => import('@/views/activity')
 
@@ -56,12 +66,6 @@ const routes = [
     component: Home,
     meta: { isNav: true, title: '用户管理' },
     children: [
-      // {
-      //   path: '/home/schoolManage',
-      //   name: 'schoolManage',
-      //   component: schoolManage,
-      //   meta: { hidden: true, title: '学校管理' }
-      // },
       {
         path: '/centerUser',
         name: 'centerUser',
@@ -74,30 +78,26 @@ const routes = [
         component: studentUser,
         meta: { hidden: true, title: '学生用户' }
       }
-      // {
-      //   path: '/home/termManage',
-      //   name: 'termManage',
-      //   component: termManage,
-      //   meta: { hidden: true, title: '学期管理' }
-      // },
-      // {
-      //   path: '/home/gradeManage',
-      //   name: 'gradeManage',
-      //   component: gradeManage,
-      //   meta: { hidden: true, title: '年级管理' }
-      // },
-      // {
-      //   path: '/home/classManage',
-      //   name: 'classManage',
-      //   component: classManage,
-      //   meta: { hidden: true, title: '班级管理' }
-      // },
-      // {
-      //   path: '/home/stationManage',
-      //   name: 'stationManage',
-      //   component: stationManage,
-      //   meta: { hidden: true, title: '岗位管理' }
-      // }
+    ]
+  },
+  // 学校设置
+  {
+    path: '/schoolManage',
+    component: Home,
+    meta: { isNav: false, title: '学校设置' },
+    children: [
+      {
+        path: '/schoolManage',
+        name: 'schoolManage',
+        component: schoolManage,
+        meta: { hidden: true, title: '学校设置' }
+      },
+      {
+        path: '/schoolAdd',
+        name: 'schoolAdd',
+        component: schoolAdd,
+        meta: { hidden: false, title: '学校添加' }
+      }
     ]
   },
   // 内容管理
@@ -123,6 +123,12 @@ const routes = [
         name: 'column',
         component: column,
         meta: { hidden: true, title: '栏目设置' }
+      },
+      {
+        path: '/articleDetail',
+        name: 'articleDetail',
+        component: articleDetail,
+        meta: { hidden: false, title: '文章详情' }
       }
     ]
   },
@@ -154,7 +160,7 @@ const routes = [
   },
   // 分享管理
   {
-    path: '/shareManages',
+    path: '/shareManage',
     component: Home,
     meta: { isNav: false, title: '分享管理' },
     children: [
@@ -170,13 +176,13 @@ const routes = [
   {
     path: '/reportManage',
     component: Home,
-    meta: { isNav: false, title: '举报管理' },
+    meta: { isNav: false, title: '举报处理' },
     children: [
       {
         path: '/reportManage',
         name: 'reportManage',
         component: reportManage,
-        meta: { hidden: true, title: '举报管理' }
+        meta: { hidden: true, title: '举报处理' }
       }
     ]
   },

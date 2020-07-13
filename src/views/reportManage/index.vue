@@ -1,13 +1,28 @@
 <template>
-  <div class="applyManage">
-    <!-- 搜索表头 -->
-    <el-row>
-      <el-col>
-        <el-button type="primary" @click="applyDialogVisible = true">添加应用</el-button>
-      </el-col>
-    </el-row>
-    <div class="apply-main">
-      <!-- 表格主体 -->
+  <div class="reportManage">
+    <div class="containerTitle">
+      举报处理
+    </div>
+    <div class="reportManage-container">
+      <!-- 搜索表头 -->
+      <el-row>
+        <el-col>
+           <el-radio-group v-model="handleState">
+            <el-radio :label="1">未处理</el-radio>
+            <el-radio :label="2">已处理</el-radio>
+          </el-radio-group>
+          <!-- 举报原因筛选 -->
+          <el-select v-model="value" clearable placeholder="所有举报原因">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
+  <!-- 表格主体 -->
 
       <div class="content">
         <template>
@@ -17,40 +32,34 @@
             style="width: 100%">
             <el-table-column
               prop="date"
-              label="应用图标"
+              label="学段代码"
               width="180">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="应用名称"
+              label="学段名称"
               width="180">
             </el-table-column>
             <el-table-column
               prop="address"
-              label="链接地址">
+              label="入学年龄">
             </el-table-column>
             <el-table-column
               prop="address"
-              label="是否接入微信小程序">
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              label="应用管理员">
+              label="学制">
             </el-table-column>
             <el-table-column
               fixed="right"
               label="操作">
-              <template slot-scope="scope">
-                <!-- <el-button @click="handleClick(scope.row)" type="primary" >查看</el-button> -->
-                <el-button size="small" type="primary" @click="handleClick(scope.row)">编辑</el-button>
-                <el-button size="small" @click="handleClick(scope.row)">禁用</el-button>
-                <el-button size="small" type="danger" @click="handleClick(scope.row)">删除</el-button>
+              <template>
+                 <!-- slot-scope="scope" -->
+                <el-button size="small" type="primary" @click="reportDialog = true">查看</el-button>
               </template>
             </el-table-column>
           </el-table>
         </template>
       </div>
-      <!-- <el-pagination
+      <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage4"
@@ -58,226 +67,186 @@
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
         :total="400">
-      </el-pagination> -->
+      </el-pagination>
+      <el-dialog
+        title="举报内容"
+        :visible.sync="reportDialog"
+        width="30%">
+        <span class="reportBox">
+          <div class="report-content">
+            <img src="./../../assets/images/timg.jpg" alt="">
+            <div class="report-info">
+              <h2>炫彩猫咪</h2>
+              <p>哈爱爱斯路口卡美多拉开哈爱爱斯达克是那么的拉是那么的拉开门路口卡美多拉开</p>
+              <img src="./../../assets/images/timg.jpg" alt="">
+              <dl>
+                <dt>2020-06-11 13:55:50</dt>
+                <dd>
+                  10
+                  <img src="./../../assets/img/praise.png" alt="">
+                </dd>
+              </dl>
+            </div>
+          </div>
+          <ul class="report-info">
+            <li>举报原因：色情低俗</li>
+            <li>举报人：马卫国</li>
+            <li v-if="handleState * 1 === 2">处理结果：删除投诉内容</li>
+            <li v-if="handleState * 1 === 2">处理时间：2020-06-26 18:39</li>
+          </ul>
+        </span>
+        <span slot="footer" v-if="handleState * 1 === 1" class="dialog-footer">
+          <el-button @click="reportDialog = false">忽略此投诉</el-button>
+          <el-button type="primary" @click="reportDialog = false">删除投诉内容</el-button>
+        </span>
+        <span slot="footer" v-if="handleState * 1 === 2" class="dialog-footer">
+          <el-button @click="reportDialog = false">关闭</el-button>
+        </span>
+      </el-dialog>
     </div>
-    <!-- 添加弹框 -->
-    <el-dialog
-      title="添加应用信息"
-      :visible.sync="applyDialogVisible"
-      width="35%"
-      >
-      <div class="applyDialogVisible">
-        <dl>
-          <dt>应用名称：</dt>
-          <dd>
-            <el-input v-model="applyName" placeholder="请填写应用名称" @blur="nameValidation"></el-input>
-          </dd>
-          <span v-if="applyNameFlag">您未输入应用名称</span>
-        </dl>
-        <dl>
-          <dt>链接地址：</dt>
-          <dd>
-            <el-input v-model="linkUrl" placeholder="请输入链接地址" @blur="applyLink"></el-input>
-          </dd>
-          <span v-if="linkUrlFlag">您未输入应用名称</span>
-        </dl>
-        <dl>
-          <dt>应用图标：</dt>
-          <dd>
-            <!-- <el-upload
-              class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload> -->
-            <el-upload
-              action="#"
-              list-type="picture-card"
-              :limit='1'
-              :on-preview="handleAvatarSuccess"
-              :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="imageUrl" alt="">
-            </el-dialog>
-          </dd>
-          {{this.imageUrl}}
-          <span v-if="imageUrlFlag === '3'">您未输入应用名称</span>
-        </dl>
-        <dl>
-          <dt>是否接入微信小程序：</dt>
-          <dd>
-            <template>
-              <el-radio v-model="accessWechat" label="1">是</el-radio>
-              <el-radio v-model="accessWechat" label="2">否</el-radio>
-            </template>
-          </dd>
-        </dl>
-        <dl>
-          <dt>应用管理员：</dt>
-          <dd>
-            <el-select v-model="applyAdmin" placeholder="请选择管理员">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </dd>
-        </dl>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="applyDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="applyDefine">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
+      handleState: 1,
       // 主体
       tableData: [
         { date: '2016-05-02', name: '王小虎', address: '上海市普陀区金沙江路 1518 弄' },
         { date: '2016-05-04', name: '王小虎', address: '上海市普陀区金沙江路 1517 弄' },
         { date: '2016-05-01', name: '王小虎', address: '上海市普陀区金沙江路 1519 弄' }],
       // 分页
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
-      // 弹窗
-      applyDialogVisible: false,
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-      applyName: '',
-      linkUrl: '',
-      imageUrl: '',
-      accessWechat: '1',
-      applyAdmin: '',
-      applyNameFlag: false,
-      linkUrlFlag: false,
-      dialogVisible: false,
-      imageUrlFlag: '1'
+      currentPage: 5,
+      reportDialog: false,
+      options: [],
+      value: ''
     }
   },
   methods: {
-    // 回调
-    handleRemove () {},
-    // 名称验证
-    nameValidation () {
-      this.applyName === '' ? this.applyNameFlag = true : this.applyNameFlag = false
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`)
     },
-    // 连接验证
-    applyLink () {
-      this.linkUrl === '' ? this.linkUrlFlag = true : this.linkUrlFlag = false
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
     },
-    // 上传成功
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-      this.dialogVisible = true
-      this.imageUrlFlag = '2'
+    handleClick (item) {
+      console.log(item)
+      this.reportDialogVisible = true
     },
-    // 添加确定
-    applyDefine () {
-      if (!this.applyName) {
-        this.applyNameFlag = true
-        return false
-      }
-      if (!this.linkUrl) {
-        this.linkUrlFlag = true
-        return false
-      }
-      if (this.imageUrlFlag !== '2') {
-        this.imageUrlFlag = '3'
-        return false
-      }
-      console.log('ddd')
-    }
+    delPlan () {}
   }
 }
 </script>
-<style lang="scss" scoped>
-.applyManage {
+<style lang="scss">
+.reportManage {
   padding: 30px 20px;
-  .el-row {
-    .el-col {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      .el-button {
-        padding: 9px 20px;
+  .containerTitle {
+    border-left: 4px solid rgb(9, 98, 201);
+    padding-left: 5px;
+    margin-bottom: 10px;
+  }
+  .reportManage-container {
+    padding: 12px;
+    background: #fff;
+    .el-row {
+      .el-col {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .el-radio-group {
+          .el-radio {
+            .el-radio__input {
+              display: none;
+            }
+          }
+        }
       }
     }
-  }
-  .apply-main {
-    margin-top: 20px;
-  }
-  .el-dialog {
-    .el-dialog__body {
-      dl {
-        margin: 10px 0 10px 10px;
-        dt {
-          display: inline-block;
+    .content {
+      margin: 20px 0;
+      .el-table {
+        max-height: 740px;
+        overflow: auto;
+        .el-table__header {
+          th {
+            background-color: #e0e0e0;
+            .cell {
+              text-align: report;
+            }
+          }
         }
-        dd {
-          display: inline-block;
-        }
-        span {
-         margin-left: 10px;
-         color: #f00;
+        td {
+          text-align: report;
+          .el-popover__reference {
+            margin-left: 10px;
+          }
         }
       }
-      dl:nth-child(3) {
-        dd {
-          .avatar-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+    }
+    .el-pagination {
+      text-align: report;
+    }
+    .el-dialog__wrapper {
+      .el-dialog__body {
+        .reportBox {
+          .report-content {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #F3F3F3;
+            > img {
+              display: inline-block;
+              width: 60px;
+              height: 60px;
+              margin-right: 10px;
+              border-radius: 60px;
+            }
+            .report-info {
+              display: flex;
+              flex-direction: column;
+              h2 {
+                font-size: 16px;
+              }
+              p {
+                margin: 8px 0;
+                width: 350px;
+                overflow: hidden;
+                line-height: 1.5;
+                text-overflow: ellipsis;
+                display: -webkit-box; /*将对象作为弹性伸缩盒子模型显示。*/
+                -webkit-line-clamp: 3; /*设置需要显示的行数*/
+                -webkit-box-orient: vertical; /*设置伸缩盒子的子元素排列方式(从上到下垂直排列)*/
+              }
+              > img {
+                max-width: 300px;
+                margin-bottom: 5px;
+              }
+              dl {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                dd {
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  > img {
+                    width: 18px;
+                    margin-left: 3px;
+                  }
+                }
+              }
+            }
           }
-          .avatar-uploader .el-upload:hover {
-            border-color: #409EFF;
-          }
-          .el-icon-plus::before {
-            color: #409EFF;
-          }
-          .avatar-uploader-icon {
-            font-size: 28px;
-            color: #8c939d;
-            width: 100px;
-            height: 100px;
-            line-height: 100px;
-            text-align: center;
-            border: 1px solid #ccc;
-          }
-          .avatar {
-            width: 100px;
-            height: 100px;
-            display: block;
+          .report-info {
+            display: flex;
+            flex-direction: column;
+            margin-top: 5px;
+            li {
+              display: flex;
+              margin: 3px 70px;
+            }
           }
         }
       }

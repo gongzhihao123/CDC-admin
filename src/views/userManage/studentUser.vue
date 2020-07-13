@@ -119,6 +119,7 @@ export default {
       console.log(item)
       this.studentDialogVisible = true
     },
+    // 筛选
     getSchool (data) {
       console.log('ss', data)
     }

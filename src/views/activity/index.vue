@@ -13,47 +13,45 @@
   <!-- 表格主体 -->
 
       <div class="content">
-        <template>
-          <el-table
-            :data="tableData"
-            border
-            style="width: 100%">
-            <el-table-column
-              prop="date"
-              label="学段代码"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="学段名称"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              label="入学年龄">
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              label="学制">
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作">
-              <template slot-scope="scope">
-                <el-button size="small" type="primary" @click="viewStatistics(scope.row)">查看统计</el-button>
-                <el-button size="small" type="primary" @click="handleClick(scope.row)">编辑</el-button>
-                <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
-                  <el-button slot="reference" size="small" type="danger">删除</el-button>
-                </el-popconfirm>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
+        <el-table
+          :data="tableData"
+          border
+          style="width: 100%">
+          <el-table-column
+            prop="date"
+            label="学段代码"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="学段名称"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="入学年龄">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="学制">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作">
+            <template slot-scope="scope">
+              <el-button size="small" type="primary" @click="viewStatistics(scope.row)">查看统计</el-button>
+              <el-button size="small" type="primary" @click="handleClick(scope.row)">编辑</el-button>
+              <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
+                <el-button slot="reference" size="small" type="danger">删除</el-button>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
+        :current-page="currentPage"
         :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
@@ -72,10 +70,7 @@ export default {
         { date: '2016-05-04', name: '王小虎', address: '上海市普陀区金沙江路 1517 弄' },
         { date: '2016-05-01', name: '王小虎', address: '上海市普陀区金沙江路 1519 弄' }],
       // 分页
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
+      currentPage: 5,
       activityDialogVisible: false
     }
   },
