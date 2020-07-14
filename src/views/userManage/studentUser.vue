@@ -81,7 +81,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
+        :current-page="currentPage"
         :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
@@ -101,7 +101,7 @@ export default {
         { date: '2016-05-04', name: '王小虎', address: '上海市普陀区金沙江路 1517 弄' },
         { date: '2016-05-01', name: '王小虎', address: '上海市普陀区金沙江路 1519 弄' }],
       // 分页
-      currentPage4: 4,
+      currentPage: 4,
       studentDialogVisible: false
     }
   },
