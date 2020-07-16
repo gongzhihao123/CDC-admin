@@ -23,15 +23,15 @@ module.exports = {
     hotOnly: false,
     /* 使用代理 */
     proxy: {
-      '/portal-server': {
+      '/activity': {
         /* 目标代理服务器地址 */
-        target: 'http://58.133.87.193:15002',
+        target: 'http://58.133.87.119:9001',
         // target: 'http://meetyuu.com/health',
         ws: true,
         /* 允许跨域 */
         changeOrigin: true,
         pathRewrite: {
-          '^portal-server': '/portal-server'
+          '^activity': '/activity'
         }
       }
     }

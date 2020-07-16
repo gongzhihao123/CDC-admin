@@ -24,6 +24,7 @@
   </div>
 </template>
 <script>
+// import { login } from '@/api/service'
 export default {
   data () {
     return {
@@ -51,7 +52,15 @@ export default {
     },
     submit () {
       if (this.checkBox()) {
-        console.log('sss')
+        this.$store.dispatch('login', {
+          account: this.userName,
+          password: this.password
+        })
+        // let data = {
+        //   account: this.userName,
+        //   password: this.password
+        // }
+        // login(data).then(res => console.log(res)).catch(err => console.log(err))
       }
     }
   }

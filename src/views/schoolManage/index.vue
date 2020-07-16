@@ -11,7 +11,6 @@
         </el-col>
       </el-row>
   <!-- 表格主体 -->
-
       <div class="content">
         <el-table
           :data="tableData"
@@ -20,105 +19,91 @@
           style="width: 100%; margin-top: 20px">
           <el-table-column
             prop="id"
-            label="ID"
-            width="180">
+            label="序号">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="姓名">
-          </el-table-column>
-          <el-table-column
-            prop="amount1"
-            label="数值 1（元）">
+            label="学校">
           </el-table-column>
           <el-table-column
             prop="amount2"
-            label="数值 2（元）">
+            label="校区">
           </el-table-column>
           <el-table-column
             prop="amount3"
-            label="数值 3（元）">
+            label="所属学段">
+          </el-table-column>
+          <el-table-column
+            prop="amount3"
+            label="年级">
+          </el-table-column>
+          <el-table-column
+            prop="amount3"
+            label="班级">
           </el-table-column>
           <el-table-column
             fixed="right"
             label="操作">
             <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick(scope.row)">编辑</el-button>
-              <!-- <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
+              <el-button size="small" type="primary" @click="edit(scope.row)">编辑</el-button>
+              <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
                 <el-button slot="reference" size="small" type="danger">删除</el-button>
-              </el-popconfirm> -->
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <el-pagination
+        v-if="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[10, 15, 20, 25]"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
     </div>
   </div>
 </template>
 <script>
+import { success } from '@/utils/index'
 export default {
   data () {
     return {
       // 主体
-      tableData: [
-        {
-          id: '12987122',
-          name: '王小虎',
-          amount1: '234',
-          amount2: '3.2',
-          amount3: 10
-        }, {
-          id: '12987122',
-          name: '王小虎',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        }, {
-          id: '12987122',
-          name: '王小虎',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9
-        }, {
-          id: '12987125',
-          name: '王小虎',
-          amount1: '621',
-          amount2: '2.2',
-          amount3: 17
-        }, {
-          id: '12987126',
-          name: '王小虎',
-          amount1: '539',
-          amount2: '4.1',
-          amount3: 15
-        }],
+      tableData: [],
       // 分页
-      currentPage: 5,
-      schoolDialogVisible: false,
+      currentPage: 1,
+      pageSize: 10,
+      pageNo: 1,
+      total: '',
       spanArr: [],
       position: 0
     }
   },
   methods: {
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.getSchoolList()
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.pageNo = val
+      this.getSchoolList()
     },
-    handleClick (item) {
-      console.log(item)
-      this.schoolDialogVisible = true
+    edit (item) {
+      this.$router.push({ path: '/schoolAdd', query: { schoolId: item.id, schoolName: item.name, campusFlag: item.campusFlag, isEdit: true } })
     },
-    delPlan () {},
+    // 删除学校
+    delPlan (res) {
+      this.$store.dispatch('delSchool', res.id)
+        .then((res) => {
+          if (res.code === 1) {
+            success(res.message)
+            this.getSchoolList()
+          }
+        })
+    },
     objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
         if (rowIndex % 2 !== 0) {
@@ -160,9 +145,21 @@ export default {
           colspan: _col
         }
       }
+    },
+    // 获取学校分页列表
+    async getSchoolList () {
+      await this.$store.dispatch('schoolList', {
+        pageNo: this.pageNo,
+        pageSize: this.pageSize
+      })
+        .then((res) => {
+          this.tableData = res.records
+          this.total = res.total
+        })
     }
   },
-  mounted () {
+  async mounted () {
+    await this.getSchoolList()
     this.getSpanArr(this.tableData)
   }
 }

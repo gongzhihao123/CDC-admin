@@ -33,7 +33,7 @@ import classSet from './../../components/schoolManage/classSet'
 export default {
   data () {
     return {
-      activeNum: 3
+      activeNum: 1
     }
   },
   components: {
