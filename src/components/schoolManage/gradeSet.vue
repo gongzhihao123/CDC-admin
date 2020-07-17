@@ -32,22 +32,24 @@
         </div>
       </div> -->
       <div class="campusZone">
-        <div class="campusBox" v-for="(item, index) in campusLists" :key="index">
+        <div class="campusBox" v-for="(item, index) in school.campusList" :key="index">
           <span>
             <h3>{{item.name}}</h3>
             <el-button type="primary" size="small" @click="handleGrade(1, item)">添加年级</el-button>
           </span>
-          <div v-for=" (ite, ind) in item.sections " :key="ind">
-            <b>{{ ite === '1' ? '小学' : ite === '2' ? '初中' : '高中' }}：</b>
-            <ul>
-              <li>
-                <p>一年级</p>
-                <span>
-                  <el-button type="text">编辑</el-button>
-                  <el-button type="text">删除</el-button>
-                </span>
-              </li>
-            </ul>
+          <div v-for="(section, sid) in item.sectionList" :key="sid">
+            <div>
+              <b>{{ section.name }}：</b>
+              <ul>
+                <li v-for="(garde, gid) in section.gradeList" :key="gid">
+                  <p>{{garde.name}}</p>
+                  <span>
+                    <el-button type="text" >编辑</el-button>
+                    <el-button type="text" @click="delPlan(garde)">删除</el-button>
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -65,9 +67,9 @@
           <el-select v-model="period" clearable placeholder="请选择">
             <el-option
               v-for="item in sections"
-              :key="item.id"
+              :key="item"
               :label="item === '1' ? '小学' : item === '2' ? '初中' : '高中'"
-              :value="item.id">
+              :value="item">
             </el-option>
           </el-select>
         </li>
@@ -96,13 +98,15 @@ export default {
       campusLists: [],
       campusId: '',
       sections: [],
-      gradeList: []
+      gradeList: [],
+      school: {},
+      sectionMap: ['', '小学', '初中', '高中']
     }
   },
   methods: {
     handleGrade (uid, e) {
       this.campusId = e.id
-      this.sections = e.sections
+      this.sections = e.sections.split(',')
       this.gradeName = ''
       this.period = ''
       this.gradeSetDialog = true
@@ -119,43 +123,120 @@ export default {
         campusId: this.campusId,
         name: this.gradeName,
         schoolId: this.schoolId,
-        sections: this.sections[0] * 1,
+        section: this.period,
         number: this.gradeNumber
       })
         .then((res) => {
           if (res.code === 1) {
-            console.log(res)
             success(res.message)
+            this.init()
             this.gradeSetDialog = false
           }
         })
     },
-    // 获取年级列表
-    getGradeList () {
-      this.$store.dispatch('gradeList', this.campusId)
+    // 删除年级
+    delPlan (item) {
+      this.$store.dispatch('delGrade', item.id)
         .then((res) => {
-          console.log(res)
           if (res.code === 1) {
-            this.gradeList = res.data
+            success(res.message)
+            this.init()
           }
         })
     },
-    // 获取校区列表
-    async getCampusList () {
-      await this.$store.dispatch('campusList', this.schoolId)
+    // // 获取年级列表
+    // getGradeList () {
+    //   this.$store.dispatch('gradeList', this.campusId)
+    //     .then((res) => {
+    //       if (res.code === 1) {
+    //         this.gradeList = this.mergeGrounp(res.data)
+    //       }
+    //     })
+    // },
+    // // 获取校区列表
+    // async getCampusList () {
+    //   await this.$store.dispatch('campusList', this.schoolId)
+    //     .then((res) => {
+    //       if (res.code === 1) {
+    //         res.data.forEach(item => {
+    //           if (item.sections !== null) {
+    //             item.sections = item.sections.split(',')
+    //           } else {
+    //             item.sections = []
+    //           }
+    //         })
+    //         this.campusList = res.data
+    //         this.campusId = res.data[0].id
+    //       }
+    //     })
+    // },
+    async init () {
+      // 生成学校
+      await this.initSchool()
+      // 学区
+      await this.initCampus()
+      for (let cam = 0; cam < this.school.campusList.length; cam++) {
+        let campus = this.school.campusList[cam]
+        // 学段
+        await this.initSection(campus)
+        await this.getGradeClassData(campus)
+      }
+      this.$forceUpdate()
+    },
+    initSchool () {
+      this.school.name = this.schoolName
+      this.school.id = this.schoolId
+    },
+    async initCampus () {
+      await this.$store.dispatch('campusList', this.school.id)
         .then((res) => {
           if (res.code === 1) {
-            res.data.forEach(item => {
-              if (item.sections !== null) {
-                item.sections = item.sections.split(',')
-              } else {
-                item.sections = []
-              }
-            })
-            this.campusLists = res.data
-            // this.campusId = res.data.
+            this.school.campusList = res.data
           }
         })
+    },
+    async initSection (campus) {
+      let sections = campus.sections.split(',')
+      campus.sectionList = []
+      sections.forEach(sec => {
+        sec = {
+          id: sec,
+          name: this.sectionMap[sec]
+        }
+        campus.sectionList.push(sec)
+      })
+    },
+    async getGradeClassData (campus) {
+      let gradeList = []
+      await this.$store.dispatch('gradeList', campus.id)
+        .then((res) => {
+          if (res.code === 1) {
+            gradeList = res.data
+          }
+        })
+      let classList = []
+      await this.$store.dispatch('classList', campus.id)
+        .then((res) => {
+          if (res.code === 1) {
+            classList = res.data
+          }
+        })
+      campus.sectionList.forEach(section => {
+        section.gradeList = []
+        gradeList.forEach(grade => {
+          if (section.id * 1 === grade.section * 1) {
+            section.gradeList.push(grade)
+          }
+          classList.forEach(clazz => {
+            if (!grade.classList) {
+              grade.classList = []
+            }
+            if (grade.id === clazz.gradeId) {
+              grade.classList.push(clazz)
+            }
+          })
+        })
+      })
     }
   },
   async created () {
@@ -163,8 +244,9 @@ export default {
       this.schoolId = this.$route.query.schoolId
       this.schoolName = this.$route.query.schoolName
       this.campusFlag = this.$route.query.campusFlag
-      await this.getCampusList()
-      await this.getGradeList()
+      // await this.getCampusList()
+      // await this.getGradeList()
+      await this.init()
     }
   }
 }
@@ -217,18 +299,20 @@ export default {
           }
         }
         > div {
-          display: flex;
-          align-items: flex-start;
-          > b {
-            margin-top: 10px;
-          }
-          > ul {
-            li {
-              width: 400px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              border-bottom: 1px solid #ccc;
+          > div {
+            display: flex;
+            align-items: flex-start;
+            > b {
+              margin-top: 10px;
+            }
+            > ul {
+              li {
+                width: 400px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #ccc;
+              }
             }
           }
         }

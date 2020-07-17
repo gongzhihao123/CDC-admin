@@ -80,3 +80,44 @@ export function addGrade (data) {
 export function gradeList (data) {
   return axios.get('/gradeManage/gradeList/' + data).then((res) => res.data)
 }
+
+// 删除年级
+export function delGrade (url) {
+  return axios.delete('/gradeManage/grade/' + url).then((res) => res.data)
+}
+
+// 获取班级列表
+export function classList (data) {
+  return axios.get('/classManage/classList/' + data).then((res) => res.data)
+}
+
+// 新增班级
+export function addClass (data) {
+  return axios.post('/classManage/class', data).then((res) => res.data)
+}
+
+// 新增班级
+export function classBatchAdd (data) {
+  return axios.post('/classManage/classBatchAdd/' + data.gradeId + '/' + data.classNumber).then((res) => res.data)
+}
+
+// 删除班级
+export function delClass (url) {
+  return axios.delete('/classManage/class/' + url).then((res) => res.data)
+}
+
+// 编辑班级
+export function editClass (url, data) {
+  return axios.post('/classManage/class/' + url, data).then((res) => res.data)
+}
+
+// 文章管理
+// 文章发布
+export function addArticle (data) {
+  return axios.post('/articleManage/article', data).then((res) => res.data)
+}
+
+// 删除上传文件
+export function delUploadFile (url) {
+  return axios.delete('/common/attachment', { params: url }).then((res) => res.data)
+}

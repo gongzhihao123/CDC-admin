@@ -11,7 +11,7 @@
         </li>
         <li>
           <span>所属栏目:</span>
-          <el-checkbox-group v-model="columnCheck">
+          <el-checkbox-group v-model="channelId" @change="changeColumn">
             <el-checkbox label="1">首页</el-checkbox>
             <el-checkbox label="2">防近视栏目</el-checkbox>
             <el-checkbox label="3">控肥胖栏目</el-checkbox>
@@ -20,10 +20,11 @@
         <li>
           <span>缩略图</span>
           <el-upload
-            action="#"
+            :action="uploadPath"
             list-type="picture-card"
             :file-list="fileList"
-            :auto-upload="false">
+            :limit="1"
+            :auto-upload="true">
               <i slot="default" class="el-icon-plus"></i>
               <div slot="file" slot-scope="{file}">
                 <img
@@ -37,12 +38,6 @@
                   >
                     <i class="el-icon-zoom-in"></i>
                   </span>
-                  <!-- <span
-                    class="el-upload-list__item-delete"
-                    @click="handleDownload(file)"
-                  >
-                    <i class="el-icon-download"></i>
-                  </span> -->
                   <span
                     class="el-upload-list__item-delete"
                     @click="handleRemove(file)"
@@ -79,6 +74,8 @@ export default {
     return {
       articleTitle: '',
       columnCheck: [],
+      channelId: [],
+      channelName: '',
       articleImg: '',
       articleDialog: false,
       fileList: [],
@@ -90,17 +87,21 @@ export default {
   components: {
     mavonEditor
   },
+  computed: {
+    uploadPath () {
+      const routePath = '/activity'
+      return window.location.origin + routePath + '/common/attachment'
+    }
+  },
   methods: {
     // 上传操作
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
+    handleRemove (file) {
+      this.$store.dispatch('delUploadFile', { filepath: file.response.data.filepath })
     },
+    // 缩略图显示大图
     handlePictureCardPreview (file) {
       this.articleImg = file.url
       this.articleDialog = true
-    },
-    handleDownload (file) {
-      console.log(file)
     },
     // 将图片上传到服务器，返回地址替换到md中
     $imgAdd (pos, $file) {
@@ -117,6 +118,21 @@ export default {
     change (value, render) {
       // render 为 markdown 解析后的结果[html]
       this.html = render
+    },
+    // 栏目选择
+    changeColumn (e) {
+      this.channelId = e
+      e * 1 === 1 ? this.channelName = '首页' : e * 1 === 2 ? this.channelName = '防近视栏目' : this.channelName = '控肥胖栏目'
+    },
+    // 文章提交
+    articleconfirm () {
+      this.$store.dispatch('addArticle', {
+        channelId: this.channelId.join(),
+        channelName: this.channelName,
+        text: this.text,
+        thumbnailPath: this.thumbnailPath,
+        title: this.articleTitle
+      })
     },
     // 提交
     submit () {

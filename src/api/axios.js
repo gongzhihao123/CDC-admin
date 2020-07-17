@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as publicPath from '../config'
 // import { notice } from './../utils/index'
 // import querystring from 'querystring'
-import router from '../router'
+// import router from '../router'
 const service = axios.create({
   baseURL: publicPath.default,
   withCredentials: true,
@@ -23,7 +23,6 @@ service.interceptors.request.use((config) => {
     config.method === 'put' ||
     config.method === 'delete'
   ) {
-    console.log('1')
     config.data = JSON.stringify(config.data)
   }
   return config
@@ -33,7 +32,7 @@ service.interceptors.request.use((config) => {
 
 service.interceptors.response.use(response => {
   if (response.data.code === -2) {
-    router.push('/homePage')
+    // router.push('/homePage')
   }
   return response
 }, error => {
@@ -56,7 +55,7 @@ service.interceptors.response.use(response => {
         break
       case 404:
         error.message = '请求错误,未找到该资源'
-        window.location.href = '/NotFound'
+        // window.location.href = '/NotFound'
         break
       case 405:
         error.message = '请求方法未允许'

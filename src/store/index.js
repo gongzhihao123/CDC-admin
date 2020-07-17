@@ -155,9 +155,82 @@ export default new Vuex.Store({
         error(res.message)
       }
     },
-    // 获取学校校区列表
+    // 获取年级列表
     async gradeList ({ commit }, data) {
       const res = await server.gradeList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除年级列表
+    async delGrade ({ commit }, data) {
+      const res = await server.delGrade(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取班级列表
+    async classList ({ commit }, data) {
+      const res = await server.classList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 新增学校班级
+    async addClass ({ commit }, data) {
+      const res = await server.addClass(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 新增学校班级
+    async classBatchAdd ({ commit }, data) {
+      const res = await server.classBatchAdd(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除班级列表
+    async delClass ({ commit }, data) {
+      const res = await server.delClass(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 修改班级列表
+    async editClass ({ commit }, data) {
+      const res = await server.editClass(data.url, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 文章管理
+    // 添加文章
+    async addArticle ({ commit }, data) {
+      const res = await server.addArticle(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除上传文件
+    async delUploadFile ({ commit }, data) {
+      const res = await server.delUploadFile(data)
       if (res.code === 1) {
         return res
       } else {
