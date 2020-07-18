@@ -18,29 +18,15 @@
             border
             style="width: 100%">
             <el-table-column
-              prop="date"
-              label="学段代码"
-              width="180">
-            </el-table-column>
-            <el-table-column
               prop="name"
-              label="学段名称"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              label="入学年龄">
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              label="学制">
+              label="栏目名称">
             </el-table-column>
             <el-table-column
               fixed="right"
               label="操作">
               <template slot-scope="scope">
                 <el-button size="small" type="primary" @click="openDiaolog(2,scope.row)">编辑</el-button>
-                <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row)'>
+                <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row.id)'>
                   <el-button slot="reference" size="small" type="danger">删除</el-button>
                 </el-popconfirm>
               </template>
@@ -67,26 +53,25 @@
         </span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="columnDialog = false">取 消</el-button>
-          <el-button type="primary" @click="columnDialog = false">确 定</el-button>
+          <el-button type="primary" @click="dialogConfirm">确 定</el-button>
         </span>
       </el-dialog>
     </div>
   </div>
 </template>
 <script>
+import { success } from '@/utils/index'
 export default {
   data () {
     return {
       // 主体
-      tableData: [
-        { date: '2016-05-02', name: '王小虎', address: '上海市普陀区金沙江路 1518 弄' },
-        { date: '2016-05-04', name: '王小虎', address: '上海市普陀区金沙江路 1517 弄' },
-        { date: '2016-05-01', name: '王小虎', address: '上海市普陀区金沙江路 1519 弄' }],
+      tableData: [],
       // 分页
       currentPage: 5,
       columnDialog: false,
       addOrEdit: false,
-      columnName: ''
+      columnName: '',
+      columnId: ''
     }
   },
   methods: {
@@ -100,17 +85,72 @@ export default {
       console.log(item)
       this.centerDialogVisible = true
     },
-    delPlan () {},
+    // 删除栏目
+    delPlan (id) {
+      this.$store.dispatch('delChannel', id)
+        .then(res => {
+          if (res.code === 1) {
+            success(res.message)
+            this.getColumnList()
+            this.columnDialog = false
+          }
+        })
+    },
+    // 打卡弹框
     openDiaolog (e, data) {
       if (e * 1 === 1) {
+        this.columnName = ''
         this.addOrEdit = false
         // 添加
       } else {
         this.addOrEdit = true
+        this.columnName = data.name
+        this.columnId = data.id
         // 编辑
       }
       this.columnDialog = true
+    },
+    // 弹框提交
+    dialogConfirm () {
+      if (!this.addOrEdit) {
+        // 添加
+        this.$store.dispatch('addChannel', { name: this.columnName })
+          .then((res) => {
+            if (res.code === 1) {
+              success(res.message)
+              this.getColumnList()
+              this.columnDialog = false
+            }
+          })
+      } else {
+        // 编辑
+        let postParams = {}
+        postParams.name = this.columnName
+        this.$store.dispatch('editChannel', {
+          url: this.columnId,
+          data: postParams
+        })
+          .then((res) => {
+            if (res.code === 1) {
+              success(res.message)
+              this.getColumnList()
+              this.columnDialog = false
+            }
+          })
+      }
+    },
+    // 获取列表
+    getColumnList () {
+      this.$store.dispatch('channelList')
+        .then((res) => {
+          if (res.code === 1) {
+            this.tableData = res.data
+          }
+        })
     }
+  },
+  mounted () {
+    this.getColumnList()
   }
 }
 </script>

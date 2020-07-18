@@ -236,6 +236,43 @@ export default new Vuex.Store({
       } else {
         error(res.message)
       }
+    },
+    // 栏目管理
+    // 添加栏目
+    async addChannel ({ commit }, data) {
+      const res = await server.addChannel(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取栏目列表
+    async channelList ({ commit }, data) {
+      const res = await server.channelList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取栏目列表
+    async editChannel ({ commit }, data) {
+      const res = await server.editChannel(data.url, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除栏目列表
+    async delChannel ({ commit }, data) {
+      const res = await server.delChannel(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
     }
   }
 })

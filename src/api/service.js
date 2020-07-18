@@ -121,3 +121,24 @@ export function addArticle (data) {
 export function delUploadFile (url) {
   return axios.delete('/common/attachment', { params: url }).then((res) => res.data)
 }
+
+// 栏目设置
+// 添加栏目
+export function addChannel (data) {
+  return axios.post('/channelManage/channel', data).then((res) => res.data)
+}
+
+// 获取栏目列表
+export function channelList () {
+  return axios.get('/channelManage/channelList').then((res) => res.data)
+}
+
+// 添加栏目
+export function editChannel (url, data) {
+  return axios.post('/channelManage/channel/' + url, data).then((res) => res.data)
+}
+
+// 删除栏目
+export function delChannel (data) {
+  return axios.delete('/channelManage/channel/' + data).then((res) => res.data)
+}

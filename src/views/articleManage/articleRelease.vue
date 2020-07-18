@@ -95,7 +95,9 @@ export default {
   },
   methods: {
     // 上传操作
-    handleRemove (file) {
+    // 删除上传图片
+    handleRemove (file, fileList) {
+      console.log(fileList)
       this.$store.dispatch('delUploadFile', { filepath: file.response.data.filepath })
     },
     // 缩略图显示大图
