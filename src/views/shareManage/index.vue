@@ -4,28 +4,28 @@
       <div class="containerTitle clearfloat">
         <span>分享管理</span>
         <!-- 筛选条件 -->
-        <el-select v-model="value" clearable placeholder="请选择">
+        <!-- <el-select v-model="value" clearable placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value">
           </el-option>
-        </el-select>
+        </el-select> -->
       </div>
       <ul>
-        <li>
+        <li v-for="(item, index) in list" :key="index">
           <div class="share-content">
             <img src="./../../assets/images/timg.jpg" alt="">
             <div class="share-info">
-              <h2>炫彩猫咪</h2>
-              <p>哈爱爱斯路口卡美多拉开哈爱爱斯达克是那么的拉是那么的拉开门路口卡美多拉开</p>
+              <h2>{{ item.name }}</h2>
+              <p>{{ item.content }}</p>
               <img src="./../../assets/images/timg.jpg" alt="">
               <dl>
                 <dt>2020-06-11 13:55:50</dt>
-                <dd @click="like">
-                  <img v-if="!likeFlag" src="./../../assets/img/praise.png" alt="">
-                  <img v-else src="./../../assets/img/praise-active.png" alt="">
+                <dd @click="like(item, index)">
+                  <img v-if="!item.likeFlag" :src="item.img" alt="">
+                  <img v-else :src="item.activeImg" alt="">
                 </dd>
               </dl>
             </div>
@@ -48,15 +48,21 @@ export default {
       value: '',
       options: [],
       tableData: [{ name: '1', id: 2 }, { name: '2', id: 2 }],
-      likeFlag: false
+      list: [
+        { name: '名称', content: '内容', likeFlag: false, img: require('./../../assets/img/praise.png'), activeImg: require('./../../assets/img/praise-active.png') },
+        { name: '名称', content: '内容', likeFlag: false, img: require('./../../assets/img/praise.png'), activeImg: require('./../../assets/img/praise-active.png') },
+        { name: '名称', content: '内容', likeFlag: false, img: require('./../../assets/img/praise.png'), activeImg: require('./../../assets/img/praise-active.png') }
+      ]
     }
   },
   methods: {
-    like () {
-      if (this.likeFlag) {
-        this.likeFlag = false
+    like (item, index) {
+      console.log(index)
+      if (!item.likeFlag) { // 判断是否有isShow属性
+        this.$set(item, 'likeFlag', false) // 没有则为当前对象设置该属性为false
+        item.likeFlag = !item.likeFlag
       } else {
-        this.likeFlag = true
+        item.likeFlag = !item.likeFlag
       }
     },
     delPlan () {}

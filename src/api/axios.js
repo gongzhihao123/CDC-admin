@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as publicPath from '../config'
 // import { notice } from './../utils/index'
 // import querystring from 'querystring'
-// import router from '../router'
+import router from '../router'
 const service = axios.create({
   baseURL: publicPath.default,
   withCredentials: true,
@@ -49,6 +49,7 @@ service.interceptors.response.use(response => {
         break
       case 401:
         error.message = '未授权，请重新登录'
+        router.push('/login')
         break
       case 403:
         error.message = '拒绝访问'

@@ -1,6 +1,13 @@
 // import http from './http'
 import axios from './axios'
 
+// 公共
+
+// 获取中心用户列表
+export function readFile (params) {
+  return axios.get('/common/attachment', { params }).then((res) => res.data)
+}
+
 // 登录
 export function login (data) {
   return axios.post('/login/webLogin', data).then((res) => res.data)
@@ -37,10 +44,12 @@ export function resetUser (url, data) {
 export function schoolList (data) {
   return axios.get('/schoolManage/schoolPage/' + data.pageNo + '/' + data.pageSize).then((res) => res.data)
 }
+
 // 新增学校
 export function addSchool (data) {
   return axios.post('/schoolManage/school', data).then((res) => res.data)
 }
+
 // 删除学校
 export function delSchool (url) {
   return axios.delete('/schoolManage/school/' + url).then((res) => res.data)
@@ -117,9 +126,34 @@ export function addArticle (data) {
   return axios.post('/articleManage/article', data).then((res) => res.data)
 }
 
+// 获取文章列表
+export function articleList (pageNo, pageSize, data) {
+  return axios.get('/articleManage/articlePage/' + pageNo + '/' + pageSize, { params: data }).then((res) => res.data)
+}
+
+// 获取文章详情
+export function articleDetail (data) {
+  return axios.get('/articleManage/articleText/' + data).then((res) => res.data)
+}
+
+// 编辑文章
+export function editArticle (url, data) {
+  return axios.post('/articleManage/article/' + url, data).then((res) => res.data)
+}
+
+// 删除上传文件
+export function delArticle (url) {
+  return axios.delete('/articleManage/article/' + url).then((res) => res.data)
+}
+
 // 删除上传文件
 export function delUploadFile (url) {
   return axios.delete('/common/attachment', { params: url }).then((res) => res.data)
+}
+
+// 获取栏目文章列表
+export function channelArticleList (data) {
+  return axios.get('/articleManage/channelArticleList', { params: data }).then((res) => res.data)
 }
 
 // 栏目设置
@@ -133,7 +167,7 @@ export function channelList () {
   return axios.get('/channelManage/channelList').then((res) => res.data)
 }
 
-// 添加栏目
+// 编辑栏目
 export function editChannel (url, data) {
   return axios.post('/channelManage/channel/' + url, data).then((res) => res.data)
 }

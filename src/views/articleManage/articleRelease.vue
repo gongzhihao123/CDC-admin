@@ -9,19 +9,22 @@
           <span>文章标题:</span>
           <el-input v-model="articleTitle" clearable placeholder="请输入内容"></el-input>
         </li>
-        <li>
+        <!-- <li>
           <span>所属栏目:</span>
           <el-checkbox-group v-model="channelId" @change="changeColumn">
             <el-checkbox label="1">首页</el-checkbox>
             <el-checkbox label="2">防近视栏目</el-checkbox>
             <el-checkbox label="3">控肥胖栏目</el-checkbox>
           </el-checkbox-group>
-        </li>
+        </li> -->
         <li>
           <span>缩略图</span>
           <el-upload
+            :class="{uoloadSty:showBtnImg,disUoloadSty:noneBtnImg}"
             :action="uploadPath"
             list-type="picture-card"
+            :on-change="imgChange"
+            :on-success="uploadSuccess"
             :file-list="fileList"
             :limit="1"
             :auto-upload="true">
@@ -40,7 +43,7 @@
                   </span>
                   <span
                     class="el-upload-list__item-delete"
-                    @click="handleRemove(file)"
+                    @click="handleRemove(file, fileList)"
                   >
                     <i class="el-icon-delete"></i>
                   </span>
@@ -60,13 +63,14 @@
         </li>
       </ul>
       <div class="articleReleaseFoot">
-        <el-button type="success" size="small">发布</el-button>
+        <el-button type="success" size="small" @click="articleconfirm">发布</el-button>
         <el-button size="small" @click="backArticleManage">返回</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { success } from '@/utils/index'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 export default {
@@ -78,7 +82,13 @@ export default {
       channelName: '',
       articleImg: '',
       articleDialog: false,
+      isAdd: false,
+      article: {},
+      // 上传参数
       fileList: [],
+      showBtnImg: true,
+      noneBtnImg: false,
+      limitCountImg: 1, // 上传图片的最大数量
       content: '', // 输入的markdown
       html: '', // 及时转的html,
       configs: {}
@@ -97,20 +107,37 @@ export default {
     // 上传操作
     // 删除上传图片
     handleRemove (file, fileList) {
-      console.log(fileList)
-      this.$store.dispatch('delUploadFile', { filepath: file.response.data.filepath })
+      let url = ''
+      if (this.isAdd) {
+        url = file.response.data.filepath
+      } else {
+        url = file.url.replace(window.location.origin + '/activity/common/attachment?filepath=', '')
+      }
+      this.$store.dispatch('delUploadFile', { filepath: url })
+        .then((res) => {
+          if (res.code === 1) {
+            success(res.message)
+            this.fileList = []
+            this.noneBtnImg = fileList.length >= this.limitCountImg
+            this.thumbnailPath = ''
+          }
+        })
+    },
+    uploadSuccess (res) {
+      this.thumbnailPath = res.data.filepath
     },
     // 缩略图显示大图
     handlePictureCardPreview (file) {
       this.articleImg = file.url
       this.articleDialog = true
     },
+    imgChange (file, fileList) {
+      this.noneBtnImg = fileList.length >= this.limitCountImg
+    },
     // 将图片上传到服务器，返回地址替换到md中
     $imgAdd (pos, $file) {
       let formdata = new FormData()
-
       this.$upload.post('/上传接口地址', formdata).then(res => {
-        console.log(res.data)
         this.$refs.md.$img2Url(pos, res.data)
       }).catch(err => {
         console.log(err)
@@ -128,22 +155,59 @@ export default {
     },
     // 文章提交
     articleconfirm () {
-      this.$store.dispatch('addArticle', {
-        channelId: this.channelId.join(),
-        channelName: this.channelName,
-        text: this.text,
-        thumbnailPath: this.thumbnailPath,
-        title: this.articleTitle
-      })
+      if (this.isAdd) {
+        this.$store.dispatch('addArticle', {
+          text: this.html,
+          thumbnailPath: this.thumbnailPath,
+          title: this.articleTitle
+        })
+          .then((res) => {
+            if (res.code === 1) {
+              success(res.message)
+            }
+          })
+      } else {
+        this.$store.dispatch('editArticle', {
+          text: this.html,
+          thumbnailPath: this.thumbnailPath,
+          title: this.articleTitle
+        })
+          .then((res) => {
+            if (res.code === 1) {
+              success(res.message)
+            }
+          })
+      }
     },
-    // 提交
-    submit () {
-      console.log(this.content)
-      console.log(this.html)
+    // 获取文章详情articleDetail
+    getArticleDetail (id) {
+      this.$store.dispatch('articleDetail', id)
+        .then(res => {
+          this.content = res.text
+        })
     },
     // 返回文章管理
     backArticleManage () {
       this.$router.push('/articleManage')
+    }
+  },
+  created () {
+    if (this.$route.query.article) {
+      this.article = this.$route.query.article
+      this.articleTitle = this.$route.query.article.title
+      if (this.$route.query.article.thumbnailPath) {
+        const routePath = '/activity'
+        let obj = {}
+        obj.url = window.location.origin + routePath + '/common/attachment?filepath=' + this.$route.query.article.thumbnailPath
+        this.fileList.push(obj)
+        if (this.fileList.length > 0) {
+          this.noneBtnImg = true
+        }
+      }
+      this.getArticleDetail(this.$route.query.article.id)
+      this.isAdd = false
+    } else {
+      this.isAdd = true
     }
   }
 }
@@ -215,5 +279,18 @@ export default {
       }
     }
   }
+}
+</style>
+<style>
+.uoloadSty {
+  display: flex;
+}
+.uoloadSty .el-upload--picture-card{
+  width:110px;
+  height:110px;
+  line-height:110px;
+}
+.disUoloadSty .el-upload--picture-card{
+  display:none;   /* 上传按钮隐藏 */
 }
 </style>

@@ -17,6 +17,16 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    // 公共
+    // 读取文件
+    async readFile ({ commit }, data) {
+      const res = await server.readFile(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
     // 登录
     async login ({ commit }, data) {
       const res = await server.login(data)
@@ -228,9 +238,54 @@ export default new Vuex.Store({
         error(res.message)
       }
     },
+    // 获取文章列表
+    async articleList ({ commit }, data) {
+      const res = await server.articleList(data.pageNo, data.pageSize, data.data)
+      if (res.code === 1) {
+        return res.data
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取文章详情
+    async articleDetail ({ commit }, data) {
+      const res = await server.articleDetail(data)
+      if (res.code === 1) {
+        return res.data
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除文章
+    async delArticle ({ commit }, data) {
+      const res = await server.delArticle(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 修改文章列表
+    async editArticle ({ commit }, data) {
+      const res = await server.editArticle(data.url, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
     // 删除上传文件
     async delUploadFile ({ commit }, data) {
       const res = await server.delUploadFile(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取栏目文章
+    async channelArticleList ({ commit }, data) {
+      const res = await server.channelArticleList(data)
       if (res.code === 1) {
         return res
       } else {
@@ -256,7 +311,7 @@ export default new Vuex.Store({
         error(res.message)
       }
     },
-    // 获取栏目列表
+    // 修改栏目列表
     async editChannel ({ commit }, data) {
       const res = await server.editChannel(data.url, data.data)
       if (res.code === 1) {
