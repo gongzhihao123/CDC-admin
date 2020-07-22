@@ -174,6 +174,15 @@ export default new Vuex.Store({
         error(res.message)
       }
     },
+    // 编辑学校班级
+    async editGrade ({ commit }, data) {
+      const res = await server.editGrade(data.url, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
     // 删除年级列表
     async delGrade ({ commit }, data) {
       const res = await server.delGrade(data)
@@ -292,6 +301,24 @@ export default new Vuex.Store({
         error(res.message)
       }
     },
+    // 添加栏目文章
+    async addChannelArticle ({ commit }, data) {
+      const res = await server.addChannelArticle(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 添加栏目文章
+    async delChannelArticle ({ commit }, data) {
+      const res = await server.delChannelArticle(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
     // 栏目管理
     // 添加栏目
     async addChannel ({ commit }, data) {
@@ -323,6 +350,43 @@ export default new Vuex.Store({
     // 删除栏目列表
     async delChannel ({ commit }, data) {
       const res = await server.delChannel(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 活动管理
+    // 添加活动
+    async addActivity ({ commit }, data) {
+      const res = await server.addActivity(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取活动列表
+    async activityList ({ commit }, data) {
+      const res = await server.activityList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 修改活动状态
+    async editActivityState ({ commit }, data) {
+      const res = await server.editActivityState(data.url, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除活动列表
+    async delActivity ({ commit }, data) {
+      const res = await server.delActivity(data)
       if (res.code === 1) {
         return res
       } else {

@@ -9,14 +9,14 @@
   <div class="login">
     <div class="logo"></div>
     <div class="form-item">
-        <input class="username" v-model="userName" type="text" autocomplete="off" placeholder="账号">
+        <input class="username" v-model="userName" type="text" @keyup.enter="submit" autocomplete="off" placeholder="账号">
         <p class="tip" v-if="userFlag">请输入正确的账号</p>
     </div>
     <div class="form-item">
-        <input class="password" v-model="password" type="password" autocomplete="off" placeholder="登录密码">
+        <input class="password" v-model="password" @keyup.enter="submit" type="password" autocomplete="off" placeholder="登录密码">
         <p class="tip" v-if="passwordFlag">账号或密码不正确</p>
     </div>
-    <div class="form-item"><button @click="submit">登 录</button></div>
+    <div class="form-item"><button @click="submit"  >登 录</button></div>
     <div class="reg-bar">
         <a class="reg" href="" target="_blank">立即注册</a>
         <a class="forget" href="" target="_blank">忘记密码</a>

@@ -214,12 +214,14 @@ export default {
       this.schoolId = this.$route.query.schoolId
       this.schoolName = this.$route.query.schoolName
       this.campusFlag = this.$route.query.campusFlag
-      if (this.campusFlag === 'true') {
+      if (JSON.parse(this.campusFlag)) {
+        // 有分校区
         this.isCampus = 2
         this.getCampusList()
       } else {
-        this.getnoCampusList()
+        // 无分校区
         this.isCampus = 1
+        this.getnoCampusList()
       }
       this.showButton = false
     }

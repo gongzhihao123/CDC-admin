@@ -18,14 +18,10 @@
           border
           style="width: 100%; margin-top: 20px">
           <el-table-column
-            prop="id"
-            label="序号">
-          </el-table-column>
-          <el-table-column
             prop="name"
             label="学校">
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="amount2"
             label="校区">
           </el-table-column>
@@ -40,7 +36,7 @@
           <el-table-column
             prop="amount3"
             label="班级">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             fixed="right"
             label="操作">

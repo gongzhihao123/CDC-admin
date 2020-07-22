@@ -5,11 +5,12 @@
     </div>
     <div class="activityRelease-container">
       <div class="activityRelease-info">
-        <h1>暑期防近视活动</h1>
+        <h1>{{ activityDetail.title }}</h1>
         <ul>
           <li>
             <p>创建时间：</p>
-            <span>2020-06-26 18:39</span>
+            <span v-if="this.activityDetail">{{ activityDetail.createdTime[0] + '-' + activityDetail.createdTime[1] + '-' + activityDetail.createdTime[2] + ' '
+                  + activityDetail.createdTime[3] + ':' + activityDetail.createdTime[4] + ':' + activityDetail.createdTime[5] }}</span>
           </li>
           <li>
             <p>状态：</p>
@@ -75,6 +76,7 @@ import SCREEN from './../../components/common/screen'
 export default {
   data () {
     return {
+      activityDetail: {},
       // 主体
       tableData: [],
       // 分页
@@ -89,6 +91,15 @@ export default {
     // 筛选
     getSchool (data) {
       console.log('ss', data)
+    },
+    backActivityManage () {
+      this.$router.go(-1)
+    }
+  },
+  mounted () {
+    if (this.$route.query.data) {
+      this.activityDetail = this.$route.query.data
+      console.log(this.activityDetail)
     }
   }
 }

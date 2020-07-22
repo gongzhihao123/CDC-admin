@@ -90,6 +90,11 @@ export function gradeList (data) {
   return axios.get('/gradeManage/gradeList/' + data).then((res) => res.data)
 }
 
+// 编辑班级
+export function editGrade (url, data) {
+  return axios.post('/gradeManage/grade/' + url, data).then((res) => res.data)
+}
+
 // 删除年级
 export function delGrade (url) {
   return axios.delete('/gradeManage/grade/' + url).then((res) => res.data)
@@ -156,6 +161,16 @@ export function channelArticleList (data) {
   return axios.get('/articleManage/channelArticleList', { params: data }).then((res) => res.data)
 }
 
+// 添加栏目文章
+export function addChannelArticle (data) {
+  return axios.post('/articleManage/channelArticle', data).then((res) => res.data)
+}
+
+// 删除上传文件
+export function delChannelArticle (url) {
+  return axios.delete('/articleManage/channelArticle' + url).then((res) => res.data)
+}
+
 // 栏目设置
 // 添加栏目
 export function addChannel (data) {
@@ -175,4 +190,25 @@ export function editChannel (url, data) {
 // 删除栏目
 export function delChannel (data) {
   return axios.delete('/channelManage/channel/' + data).then((res) => res.data)
+}
+
+// 活动设置
+// 添加活动
+export function addActivity (data) {
+  return axios.post('/activityManage/activity', data).then((res) => res.data)
+}
+
+// 获取活动列表
+export function activityList (data) {
+  return axios.get('/activityManage/activityPage/' + data.pageNo + '/' + data.pageSize).then((res) => res.data)
+}
+
+// 修改活动状态
+export function editActivityState (url, data) {
+  return axios.post('/activityManage/activity/' + url, data).then((res) => res.data)
+}
+
+// 删除活动
+export function delActivity (data) {
+  return axios.delete('/activityManage/activity/' + data).then((res) => res.data)
 }

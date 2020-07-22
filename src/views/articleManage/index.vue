@@ -10,12 +10,12 @@
           <el-button type="primary" size="small" @click="navReleaseOrEdit(1)">文章发布</el-button>
           <div>
             <!-- 栏目选择 -->
-            <el-select v-model="value" clearable @change="changeColumn" placeholder="请选择">
+            <el-select v-model="value" clearable  placeholder="请选择">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.id"
+                :value="item.name">
               </el-option>
             </el-select>
             <!-- 输入框 -->
@@ -95,19 +95,19 @@
           <span class="articleManage-columnSet">
             栏目名称：
             <!-- 栏目选择 -->
-            <el-select v-model="value" clearable placeholder="请选择">
+            <el-select v-model="columnArticleId" @change="changeColumn" clearable placeholder="请选择">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in channelList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </span>
-          <span slot="footer" class="dialog-footer">
+          <!-- <span slot="footer" class="dialog-footer">
             <el-button @click="columnDialog = false">取 消</el-button>
             <el-button type="primary" @click="dialogConfirm">确 定</el-button>
-          </span>
+          </span> -->
         </el-dialog>
       </div>
     </div>
@@ -125,7 +125,10 @@ export default {
       tableData: [],
       options: [],
       value: '',
+      columnArticleId: '',
+      channelList: [],
       keyword: '',
+      articleId: '',
       channelId: '',
       channelName: '',
       columnDialog: false
@@ -158,16 +161,29 @@ export default {
     dialogConfirm () {},
     // 获取栏目文章列表
     getChannelArticleList (id) {
+      this.articleId = id
       this.$store.dispatch('channelArticleList', {
         articleId: id
       })
         .then((res) => {
           if (res.code === 1) {
-            this.options = res.data
+            this.channelList = res.data.channelList
+            this.columnDialog = true
+            this.columnArticleId = ''
           }
         })
     },
-    changeColumn () {},
+    changeColumn (e) {
+      this.$store.dispatch('addChannelArticle', {
+        articleId: this.articleId,
+        channelId: e
+      })
+        .then((res) => {
+          if (res.code === 1) {
+            success(res.message)
+          }
+        })
+    },
     // 删除文章
     delPlan (id) {
       this.$store.dispatch('delArticle', id)

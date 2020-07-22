@@ -44,7 +44,7 @@
                 <li v-for="(garde, gid) in section.gradeList" :key="gid">
                   <p>{{garde.name}}</p>
                   <span>
-                    <el-button type="text" >编辑</el-button>
+                    <el-button type="text" @click="handleGrade(2, garde)">编辑</el-button>
                     <el-button type="text" @click="delPlan(garde)">删除</el-button>
                   </span>
                 </li>
@@ -97,6 +97,7 @@ export default {
       campusFlag: false,
       campusLists: [],
       campusId: '',
+      gradeId: '',
       sections: [],
       gradeList: [],
       school: {},
@@ -105,10 +106,18 @@ export default {
   },
   methods: {
     handleGrade (uid, e) {
-      this.campusId = e.id
-      this.sections = e.sections.split(',')
-      this.gradeName = ''
-      this.period = ''
+      if (uid * 1 === 2) {
+        // 编辑
+        this.gradeName = e.name
+        this.period = e.section
+        this.gradeId = e.id
+      } else {
+        // 添加
+        this.campusId = e.id
+        this.sections = e.sections.split(',')
+        this.gradeName = ''
+        this.period = ''
+      }
       this.gradeSetDialog = true
       this.isAdd = uid
     },
@@ -116,8 +125,11 @@ export default {
       if (this.isAdd === 1) {
         // 添加
         this.addsGrade()
+      } else {
+        this.editGrade()
       }
     },
+    // 添加年级
     addsGrade () {
       this.$store.dispatch('addGrade', {
         campusId: this.campusId,
@@ -125,6 +137,24 @@ export default {
         schoolId: this.schoolId,
         section: this.period,
         number: this.gradeNumber
+      })
+        .then((res) => {
+          if (res.code === 1) {
+            success(res.message)
+            this.init()
+            this.gradeSetDialog = false
+          }
+        })
+    },
+    // 编辑年级
+    editGrade () {
+      let postParms = {}
+      postParms.name = this.gradeName
+      postParms.number = this.gradeNumber
+      postParms.section = this.period
+      this.$store.dispatch('editGrade', {
+        url: this.gradeId,
+        data: postParms
       })
         .then((res) => {
           if (res.code === 1) {

@@ -157,6 +157,7 @@ export default {
     articleconfirm () {
       if (this.isAdd) {
         this.$store.dispatch('addArticle', {
+          rowText: this.content,
           text: this.html,
           thumbnailPath: this.thumbnailPath,
           title: this.articleTitle
@@ -168,6 +169,7 @@ export default {
           })
       } else {
         this.$store.dispatch('editArticle', {
+          rowText: this.content,
           text: this.html,
           thumbnailPath: this.thumbnailPath,
           title: this.articleTitle
@@ -183,7 +185,7 @@ export default {
     getArticleDetail (id) {
       this.$store.dispatch('articleDetail', id)
         .then(res => {
-          this.content = res.text
+          this.content = res.rowText
         })
     },
     // 返回文章管理

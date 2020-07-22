@@ -78,7 +78,7 @@
           </li>
           <li v-if="isAdd * 1 !== 1">
             <span>班级序号：</span>
-            <el-input placeholder="请输入班级名称" v-model="classSequence" clearable></el-input>
+            <el-input placeholder="请输入班级序号" v-model="classSequence" clearable></el-input>
           </li>
         </span>
         <span slot="footer" class="dialog-footer">
@@ -121,6 +121,7 @@ export default {
   methods: {
     addClass (e) {
       this.isAdd = e
+      this.classNumber = ''
       this.className = ''
       this.classSequence = ''
       this.classSetDialog = true
@@ -144,7 +145,7 @@ export default {
         campusId: this.campusId,
         gradeId: this.selectTepGrade,
         name: this.className,
-        number: this.classNumber,
+        number: this.classSequence,
         schoolId: this.schoolId
       })
         .then((res) => {
