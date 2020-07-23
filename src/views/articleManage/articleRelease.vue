@@ -118,7 +118,7 @@ export default {
           if (res.code === 1) {
             success(res.message)
             this.fileList = []
-            this.noneBtnImg = fileList.length >= this.limitCountImg
+            this.noneBtnImg = false
             this.thumbnailPath = ''
           }
         })
@@ -216,7 +216,7 @@ export default {
 </script>
 <style lang="scss">
 .articleRelease {
-  padding: 30px 20px;
+  padding: 20px;
   .containerTitle {
     border-left: 4px solid rgb(9, 98, 201);
     padding-left: 5px;

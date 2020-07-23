@@ -52,7 +52,7 @@
               <el-button v-if="scope.row.state == 0" size="small" type="success" @click="changeActivityState(1, scope.row.id)">发布</el-button>
               <el-button v-if="scope.row.state == 1" size="small" type="info" @click="changeActivityState(2, scope.row.id)">结束</el-button>
               <el-button size="small" type="primary" @click="viewStatistics(scope.row)">查看统计</el-button>
-              <el-button size="small" type="primary" @click="goActivityRelease(2, scope.row)">编辑</el-button>
+              <!-- <el-button size="small" type="primary" @click="goActivityRelease(2, scope.row)">编辑</el-button> -->
               <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row.id)'>
                 <el-button slot="reference" size="small" type="danger">删除</el-button>
               </el-popconfirm>
@@ -156,7 +156,7 @@ export default {
 </script>
 <style lang="scss">
 .activityManage {
-  padding: 30px 20px;
+  padding: 20px;
   .containerTitle {
     border-left: 4px solid rgb(9, 98, 201);
     padding-left: 5px;

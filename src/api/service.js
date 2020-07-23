@@ -212,3 +212,55 @@ export function editActivityState (url, data) {
 export function delActivity (data) {
   return axios.delete('/activityManage/activity/' + data).then((res) => res.data)
 }
+
+// 分享管理
+// 获取进行中的活动列表
+export function shareActivityList () {
+  return axios.get('/share/activityList').then((res) => res.data)
+}
+
+// 下架
+export function offline (url) {
+  return axios.post('/share/offline/' + url).then((res) => res.data)
+}
+
+// 删除分享
+export function delShare (url) {
+  return axios.post('/share/share/' + url).then((res) => res.data)
+}
+
+// 获取活动列表
+export function sharePage (page, data) {
+  return axios.get('/share/sharePage/' + page.pageNo + '/' + page.pageSize, { params: data }).then((res) => res.data)
+}
+
+// 置顶
+export function shareTop (url) {
+  return axios.post('/share/top/' + url).then((res) => res.data)
+}
+
+// 取消下架
+export function unoffline (url) {
+  return axios.post('/share/unoffline/' + url).then((res) => res.data)
+}
+
+// 取消置顶
+export function unShareTop (url) {
+  return axios.post('/share/untop/' + url).then((res) => res.data)
+}
+
+// 举报管理
+// 处理
+export function reportDeal (url, data) {
+  return axios.post('/report/deal/' + url, data).then((res) => res.data)
+}
+
+// 获取举报列表
+export function reportPage (page, data) {
+  return axios.get('/report/reportPage/' + page.pageNo + '/' + page.pageSize, { params: data }).then((res) => res.data)
+}
+
+// 获取举报分享
+export function reportShare (data) {
+  return axios.get('/report/share/' + data).then((res) => res.data)
+}

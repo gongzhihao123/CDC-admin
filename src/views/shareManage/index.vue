@@ -3,18 +3,28 @@
     <div class="shareManage-container">
       <div class="containerTitle clearfloat">
         <span>分享管理</span>
-        <!-- 筛选条件 -->
-        <!-- <el-select v-model="value" clearable placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select> -->
+        <div>
+          <!-- 筛选条件 -->
+          <el-date-picker
+            v-model="time"
+            type="date"
+            @change="changeTime"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+          <el-select v-model="activityScreen" @change="changeActivity" clearable placeholder="请选择">
+            <el-option
+              v-for="item in allActivity"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
       </div>
       <ul>
-        <li v-for="(item, index) in list" :key="index">
+        <li v-for="(item, index) in shareList" :key="index">
           <div class="share-content">
             <img src="./../../assets/images/timg.jpg" alt="">
             <div class="share-info">
@@ -31,28 +41,42 @@
             </div>
           </div>
           <i>
-            <el-button size="small" type="primary">下架</el-button>
-            <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan'>
+            <el-button size="small" type="primary" @click="shareTop(item.id)">置顶</el-button>
+            <el-button size="small" type="primary" @click="unShareTop(item.id)">取消置顶</el-button>
+            <el-button size="small" type="primary" @click="shareOffline(item.id)">下架</el-button>
+            <el-button size="small" type="primary" @click="shareUnOffline(item.id)">取消下架</el-button>
+            <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(item.id)'>
               <el-button slot="reference" size="small" type="danger">删除</el-button>
             </el-popconfirm>
           </i>
         </li>
       </ul>
+      <el-pagination
+        v-if="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[8, 10, 15, 20]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
 <script>
+import { success } from '@/utils/index'
 export default {
   data () {
     return {
-      value: '',
-      options: [],
-      tableData: [{ name: '1', id: 2 }, { name: '2', id: 2 }],
-      list: [
-        { name: '名称', content: '内容', likeFlag: false, img: require('./../../assets/img/praise.png'), activeImg: require('./../../assets/img/praise-active.png') },
-        { name: '名称', content: '内容', likeFlag: false, img: require('./../../assets/img/praise.png'), activeImg: require('./../../assets/img/praise-active.png') },
-        { name: '名称', content: '内容', likeFlag: false, img: require('./../../assets/img/praise.png'), activeImg: require('./../../assets/img/praise-active.png') }
-      ]
+      time: this.getNowTime(),
+      activityScreen: '',
+      allActivity: [],
+      shareList: [],
+      currentPage: 1,
+      pageNo: 1,
+      pageSize: 8,
+      total: ''
     }
   },
   methods: {
@@ -65,16 +89,113 @@ export default {
         item.likeFlag = !item.likeFlag
       }
     },
-    delPlan () {}
+    // 更改时间
+    changeTime (e) {
+      console.log(e)
+    },
+    // 选择活动
+    changeActivity (e) {
+      console.log(e)
+    },
+    // 下架
+    shareOffline (id) {
+      this.$store.dispatch('offline', id)
+        .then(res => {
+          success(res.message)
+          this.getShareList()
+        })
+    },
+    // 取消下架
+    shareUnOffline (id) {
+      this.$store.dispatch('unoffline', id)
+        .then(res => {
+          success(res.message)
+          this.getShareList()
+        })
+    },
+    // 置顶
+    shareTop (id) {
+      this.$store.dispatch('shareTop', id)
+        .then(res => {
+          success(res.message)
+          this.getShareList()
+        })
+    },
+    // 取消置顶
+    unShareTop (id) {
+      this.$store.dispatch('unShareTop', id)
+        .then(res => {
+          this.getShareList()
+          success(res.message)
+        })
+    },
+    // 删除
+    delPlan (id) {
+      this.$store.dispatch('delShare', id)
+        .then(res => {
+          this.getShareList()
+          success(res.message)
+        })
+    },
+    // 获取进行中活动列表
+    getAllActivity () {
+      this.$store.dispatch('shareActivityList')
+        .then(res => {
+          this.allActivity = res.data
+        })
+    },
+    // 处理默认选中当前日期
+    getNowTime () {
+      var now = new Date()
+      var year = now.getFullYear() // 得到年份
+      var month = now.getMonth() // 得到月份
+      var date = now.getDate() // 得到日期
+      // var hour = 'T00:00:00' // 默认时分秒 如果传给后台的格式为年月日时分秒，就需要加这个，如若不需要，此行可忽略
+      month = month + 1
+      month = month.toString().padStart(2, '0')
+      date = date.toString().padStart(2, '0')
+      var defaultDate = `${year}-${month}-${date}`
+      console.log(defaultDate)
+      return defaultDate
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getShareList()
+    },
+    handleCurrentChange (val) {
+      this.pageNo = val
+      this.getShareList()
+    },
+    // 获取分享列表
+    getShareList () {
+      let page = {}
+      page.pageNo = this.pageNo
+      page.pageSize = this.pageSize
+      let postParms = {}
+      postParms.activityId = this.activityScreen
+      postParms.date = this.time
+      this.$store.dispatch('sharePage', {
+        page: page,
+        data: postParms
+      })
+        .then(res => {
+          this.shareList = res.data.records
+          this.total = res.data.total
+        })
+    }
+  },
+  mounted () {
+    this.getAllActivity()
+    this.getShareList()
   }
 }
 </script>
 <style lang="scss">
 .shareManage {
-  padding: 30px 20px;
+  padding: 20px;
   .shareManage-container {
     padding: 0 12px 12px 50px;
-    width: 800px;
+    width: 980px;
     .containerTitle {
       width: 100%;
       margin-bottom: 10px;
@@ -82,8 +203,12 @@ export default {
         border-left: 4px solid rgb(9, 98, 201);
         padding-left: 5px;
       }
-      .el-select {
+      > div {
         float: right;
+        margin-top: -10px;
+        .el-select {
+          margin-left: 10px;
+        }
       }
     }
     > ul {

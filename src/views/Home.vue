@@ -2,6 +2,17 @@
   <div class="Home">
     <Menu></Menu>
     <div class="home-container">
+      <div class="homeHeader">
+        <el-dropdown @command="out" trigger="hover">
+          <div class="homeOut">
+            <img src="./../assets/images/login.png" alt="">
+            <p>用户信息</p>
+          </div>
+          <el-dropdown-menu slot="dropdown" >
+            <el-dropdown-item >退出</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
       <router-view></router-view>
     </div>
   </div>
@@ -15,6 +26,13 @@ export default {
   components: {
     Menu
   },
+  methods: {
+    out (e) {
+      console.log(e)
+      window.localStorage.removeItem('token')
+      this.$router.push('/login')
+    }
+  },
   mounted () {}
 }
 </script>
@@ -23,7 +41,31 @@ export default {
   padding-left: 230px;
   .home-container {
     background: #F2F2F2;
-    height: 100vh;
+    height: 100%;
+    .homeHeader {
+      height: 50px;
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+      box-shadow: darkgrey 0 0 10px 5px ;//边框阴影
+      .el-dropdown {
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        .homeOut {
+          display: flex;
+          align-items: center;
+          > img {
+            width: 30px;
+            border-radius: 50%;
+            background: #ccc;
+          }
+          > p {
+            margin: 0 50px 0 5px;
+          }
+        }
+      }
+    }
   }
 }
 </style>

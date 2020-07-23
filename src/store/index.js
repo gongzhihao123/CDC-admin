@@ -392,6 +392,70 @@ export default new Vuex.Store({
       } else {
         error(res.message)
       }
+    },
+    // 分享管理
+    // 获取进行中活动列表
+    async shareActivityList ({ commit }, data) {
+      const res = await server.shareActivityList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取活动列表
+    async sharePage ({ commit }, data) {
+      const res = await server.sharePage(data.page, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 下架
+    async offline ({ commit }, data) {
+      const res = await server.offline(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 取消下架
+    async unoffline ({ commit }, data) {
+      const res = await server.unoffline(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 置顶
+    async shareTop ({ commit }, data) {
+      const res = await server.offline(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 取消置顶
+    async unShareTop ({ commit }, data) {
+      const res = await server.unoffline(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 删除分享
+    async delShare ({ commit }, data) {
+      const res = await server.delShare(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
     }
   }
 })

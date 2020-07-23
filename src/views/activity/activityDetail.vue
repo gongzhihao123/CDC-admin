@@ -106,7 +106,7 @@ export default {
 </script>
 <style lang="scss">
 .activityDetail {
-  padding: 30px 20px;
+  padding: 20px;
   .containerTitle {
     border-left: 4px solid rgb(9, 98, 201);
     padding-left: 5px;
