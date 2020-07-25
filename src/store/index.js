@@ -33,6 +33,7 @@ export default new Vuex.Store({
       if (res.code === 1) {
         window.localStorage.setItem('token', res.data)
         router.push('/centerUser')
+        return res
       } else {
         error(res.message)
       }

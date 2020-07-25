@@ -6,7 +6,7 @@
         <el-dropdown @command="out" trigger="hover">
           <div class="homeOut">
             <img src="./../assets/images/login.png" alt="">
-            <p>用户信息</p>
+            <p v-if="userName">{{ userName }}</p>
           </div>
           <el-dropdown-menu slot="dropdown" >
             <el-dropdown-item >退出</el-dropdown-item>
@@ -21,7 +21,9 @@
 import Menu from '@/components/adminManage/menu.vue'
 export default {
   data () {
-    return {}
+    return {
+      userName: ''
+    }
   },
   components: {
     Menu
@@ -33,12 +35,15 @@ export default {
       this.$router.push('/login')
     }
   },
-  mounted () {}
+  mounted () {
+    this.userName = sessionStorage.getItem('userName')
+  }
 }
 </script>
 <style lang="scss" scoped>
 .Home {
   padding-left: 230px;
+  height: 100vh;
   .home-container {
     background: #F2F2F2;
     height: 100%;

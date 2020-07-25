@@ -166,9 +166,9 @@ export function addChannelArticle (data) {
   return axios.post('/articleManage/channelArticle', data).then((res) => res.data)
 }
 
-// 删除上传文件
+// 删除栏目文章
 export function delChannelArticle (url) {
-  return axios.delete('/articleManage/channelArticle' + url).then((res) => res.data)
+  return axios.delete('/articleManage/channelArticle/' + url).then((res) => res.data)
 }
 
 // 栏目设置

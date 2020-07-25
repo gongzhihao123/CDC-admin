@@ -56,6 +56,11 @@ export default {
           account: this.userName,
           password: this.password
         })
+          .then((res) => {
+            if (res.code === 1) {
+              sessionStorage.setItem('userName', this.userName)
+            }
+          })
         // let data = {
         //   account: this.userName,
         //   password: this.password

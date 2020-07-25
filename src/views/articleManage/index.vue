@@ -93,16 +93,13 @@
           width="30%"
           center>
           <span class="articleManage-columnSet">
-            栏目名称：
             <!-- 栏目选择 -->
-            <el-select v-model="columnArticleId" @change="changeColumn" clearable placeholder="请选择">
-              <el-option
-                v-for="item in channelList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
+            <div>
+              栏目名称：
+              <el-checkbox-group v-model="channelSelectList">
+                <el-checkbox @change="changeColumn(item, $event)" :label="item.id"  v-for="(item, index) in channelList" :key="index">{{ item.name }}</el-checkbox>
+              </el-checkbox-group>
+            </div>
           </span>
           <!-- <span slot="footer" class="dialog-footer">
             <el-button @click="columnDialog = false">取 消</el-button>
@@ -127,6 +124,8 @@ export default {
       value: '',
       columnArticleId: '',
       channelList: [],
+      channelArticleList: [],
+      channelSelectList: [],
       keyword: '',
       articleId: '',
       channelId: '',
@@ -168,21 +167,49 @@ export default {
         .then((res) => {
           if (res.code === 1) {
             this.channelList = res.data.channelList
+            this.channelArticleList = res.data.channelArticleList
             this.columnDialog = true
             this.columnArticleId = ''
+            setTimeout(() => {
+              this.channelSelectList = this.arrHandle(this.channelArticleList)
+            }, 300)
           }
         })
     },
-    changeColumn (e) {
-      this.$store.dispatch('addChannelArticle', {
-        articleId: this.articleId,
-        channelId: e
-      })
-        .then((res) => {
-          if (res.code === 1) {
-            success(res.message)
-          }
+    // 数组处理
+    arrHandle (arr) {
+      let newArr = []
+      if (arr.length > 0) {
+        for (let i = 0; i < arr.length; i++) {
+          newArr.push(arr[i].channelId)
+        }
+      } else {
+        newArr = []
+      }
+      return newArr
+    },
+    // 选择栏目
+    async changeColumn (e) {
+      if (event.target.checked) {
+        // console.log('选中')
+        this.$store.dispatch('addChannelArticle', {
+          articleId: this.articleId,
+          channelId: e.id
         })
+          .then((res) => {
+            if (res.code === 1) {
+              success(res.message)
+            }
+          })
+      } else {
+        let handleArr = this.channelArticleList.filter(item => item.channelId === e.id)
+        await this.$store.dispatch('delChannelArticle', handleArr[0].id)
+          .then((res) => {
+            if (res.code === 1) {
+              success(res.message)
+            }
+          })
+      }
     },
     // 删除文章
     delPlan (id) {
@@ -265,8 +292,14 @@ export default {
     }
     .articleManage-columnSet {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      > div {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
     }
     .el-pagination {
       text-align: center;
