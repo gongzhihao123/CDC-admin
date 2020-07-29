@@ -7,17 +7,17 @@
       <!-- 搜索表头 -->
       <el-row>
         <el-col>
-           <el-radio-group v-model="handleState">
+           <el-radio-group v-model="handleState" @change="changeHandleState">
             <el-radio :label="1">未处理</el-radio>
             <el-radio :label="2">已处理</el-radio>
           </el-radio-group>
           <!-- 举报原因筛选 -->
-          <el-select v-model="value" clearable placeholder="所有举报原因">
+          <el-select v-model="resonScreen" clearable @change="chanegReson" placeholder="所有举报原因">
             <el-option
               v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </el-col>
@@ -31,73 +31,98 @@
             border
             style="width: 100%">
             <el-table-column
-              prop="date"
-              label="学段代码"
-              width="180">
+              label="举报原因">
+              <template slot-scope="scope">
+                <span>{{ scope.row.reason === 1 ? '色情低俗' : scope.row.reason === 2 ? '政治敏感' : scope.row.reason === 3 ? '广告垃圾信息' : scope.row.reason === 4 ? '病毒木马' : '其他' }}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="学段名称"
-              width="180">
+              prop="studentName"
+              label="举报人">
             </el-table-column>
             <el-table-column
-              prop="address"
-              label="入学年龄">
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              label="学制">
+              label="处理状态">
+              <template slot-scope="scope">
+                <span>{{ scope.row.state === 0 ? '未处理' : scope.row.state === 1 ? '忽略' : scope.row.state === 2 ? '下架' : scope.row.state === 3 ? '删除' : ''}}</span>
+              </template>
             </el-table-column>
             <el-table-column
               fixed="right"
               label="操作">
-              <template>
-                 <!-- slot-scope="scope" -->
-                <el-button size="small" type="primary" @click="reportDialog = true">查看</el-button>
+              <template slot-scope="scope" >
+                <el-button size="small" type="primary" @click="lookCheck(scope.row)">查看</el-button>
               </template>
             </el-table-column>
           </el-table>
         </template>
       </div>
       <el-pagination
+        v-if="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
       <el-dialog
         title="举报内容"
         :visible.sync="reportDialog"
         width="30%">
-        <span class="reportBox">
+        <!-- 未处理 -->
+        <span class="reportBox" v-if="handleState * 1 === 1">
           <div class="report-content">
-            <img src="./../../assets/images/timg.jpg" alt="">
+            <img :src="shareInfo.wechatUserImg" alt="">
             <div class="report-info">
-              <h2>炫彩猫咪</h2>
-              <p>哈爱爱斯路口卡美多拉开哈爱爱斯达克是那么的拉是那么的拉开门路口卡美多拉开</p>
-              <img src="./../../assets/images/timg.jpg" alt="">
+              <h2>{{shareInfo.studentName}}</h2>
+              <p>{{shareInfo.content}}</p>
+              <img v-if="shareInfo.contentImg" :src="readPath + shareInfo.contentImg" alt="">
               <dl>
-                <dt>2020-06-11 13:55:50</dt>
+                <dt v-if="shareInfo.createdTime">{{ shareInfo.createdTime[0] + '-' + shareInfo.createdTime[1] + '-' + shareInfo.createdTime[2] + ' ' + shareInfo.createdTime[3] + ':'
+                  + shareInfo.createdTime[4] + ':' + shareInfo.createdTime[5] }}</dt>
                 <dd>
-                  10
+                  {{ shareInfo.thumbsupNumber }}
                   <img src="./../../assets/img/praise.png" alt="">
                 </dd>
               </dl>
             </div>
           </div>
           <ul class="report-info">
-            <li>举报原因：色情低俗</li>
-            <li>举报人：马卫国</li>
-            <li v-if="handleState * 1 === 2">处理结果：删除投诉内容</li>
-            <li v-if="handleState * 1 === 2">处理时间：2020-06-26 18:39</li>
+            <li>举报原因：{{ reportContent.reason === 1 ? '色情低俗' : reportContent.reason === 2 ? '政治敏感' : reportContent.reason === 3 ? '广告垃圾信息' : reportContent.reason === 4 ? '病毒木马' : '其他' }}</li>
+            <li>举报人：{{reportContent.studentName}}</li>
+          </ul>
+        </span>
+        <!-- 已处理 -->
+        <span class="reportBox" v-if="handleState * 1 === 2">
+          <div class="report-content">
+            <img :src="shareInfo.wechatUserImg" alt="">
+            <div class="report-info">
+              <h2>{{shareInfo.studentName}}</h2>
+              <p>{{shareInfo.content}}</p>
+              <img v-if="shareInfo.contentImg" :src="readPath + shareInfo.contentImg" alt="">
+              <dl>
+                <dt v-if="shareInfo.createdTime">{{ shareInfo.createdTime[0] + '-' + shareInfo.createdTime[1] + '-' + shareInfo.createdTime[2] + ' ' + shareInfo.createdTime[3] + ':'
+                  + shareInfo.createdTime[4] + ':' + shareInfo.createdTime[5] }}</dt>
+                <dd>
+                  {{ shareInfo.thumbsupNumber }}
+                  <img src="./../../assets/img/praise.png" alt="">
+                </dd>
+              </dl>
+            </div>
+          </div>
+          <ul class="report-info">
+            <li>举报原因：{{ reportContent.reason === 1 ? '色情低俗' : reportContent.reason === 2 ? '政治敏感' : reportContent.reason === 3 ? '广告垃圾信息' : reportContent.reason === 4 ? '病毒木马' : '其他' }}</li>
+            <li>举报人：{{reportContent.studentName}}</li>
+            <li>处理结果：{{ reportContent.state === 1 ? '未处理' : reportContent.state === 2 ? '忽略' : reportContent.state === 3 ? '下架' : '删除' }}</li>
+            <li v-if="reportContent.dealTime">处理时间：{{ reportContent.dealTime[0] + '-' + reportContent.dealTime[1] + '-' + reportContent.dealTime[2] + ' ' + reportContent.dealTime[3] + ':'
+                  + reportContent.dealTime[4] + ':' +reportContent.dealTime[5]}}</li>
           </ul>
         </span>
         <span slot="footer" v-if="handleState * 1 === 1" class="dialog-footer">
-          <el-button @click="reportDialog = false">忽略此投诉</el-button>
-          <el-button type="primary" @click="reportDialog = false">删除投诉内容</el-button>
+          <el-button @click="reporthandle(1)">忽略此投诉</el-button>
+          <el-button type="primary" @click="reporthandle(2)">下架</el-button>
+          <el-button type="primary" @click="reporthandle(3)">删除投诉内容</el-button>
         </span>
         <span slot="footer" v-if="handleState * 1 === 2" class="dialog-footer">
           <el-button @click="reportDialog = false">关闭</el-button>
@@ -107,34 +132,138 @@
   </div>
 </template>
 <script>
+import { success } from '@/utils/index'
 export default {
   data () {
     return {
       handleState: 1,
       // 主体
-      tableData: [
-        { date: '2016-05-02', name: '王小虎', address: '上海市普陀区金沙江路 1518 弄' },
-        { date: '2016-05-04', name: '王小虎', address: '上海市普陀区金沙江路 1517 弄' },
-        { date: '2016-05-01', name: '王小虎', address: '上海市普陀区金沙江路 1519 弄' }],
+      tableData: [],
+      state: '0',
+      reason: '',
       // 分页
       currentPage: 5,
+      reportId: '',
+      shareId: '',
+      total: '',
+      pageNo: 1,
+      pageSize: 10,
       reportDialog: false,
-      options: [],
-      value: ''
+      reportContent: {},
+      shareInfo: {},
+      options: [{ id: '1', name: '色情低俗', checked: false },
+        { id: '2', name: '政治敏感', checked: false },
+        { id: '3', name: '广告垃圾信息', checked: false },
+        { id: '4', name: '病毒木马', checked: false },
+        { id: '5', name: '其他', checked: false }],
+      resonScreen: ''
+    }
+  },
+  computed: {
+    readPath () {
+      return window.location.origin + '/activity/common/attachment?filepath='
     }
   },
   methods: {
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.getReportLis()
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.pageNo = val
+      this.getReportLis()
     },
     handleClick (item) {
       console.log(item)
       this.reportDialogVisible = true
     },
+    // 查看按钮
+    lookCheck (e) {
+      this.getShareInfo(e.shareId)
+      this.reportContent = e
+      console.log(this.reportContent)
+      this.reportId = e.id
+      this.shareId = e.shareId
+      this.reportDialog = true
+    },
+    // 获取分享信息
+    async getShareInfo (id) {
+      await this.$store.dispatch('reportShare', id)
+        .then((res) => {
+          if (res.code === 1) {
+            this.shareInfo = res.data
+          }
+        })
+    },
+    // 选择原因
+    chanegReson (e) {
+      this.reason = e
+      this.getReportLis()
+    },
+    // 选择是否处理
+    changeHandleState (e) {
+      this.handleState = e
+      if (e * 1 === 2) {
+        let page = {}
+        let postParams = {}
+        page.pageNo = this.pageNo
+        page.pageSize = this.pageSize
+        postParams.reason = this.reason
+        postParams.state = ''
+        this.$store.dispatch('reportPage', {
+          page: page,
+          data: postParams
+        })
+          .then((res) => {
+            if (res.code === 1) {
+              this.tableData = res.data.records
+              this.total = res.data.total
+            }
+          })
+      } else {
+        this.getReportLis()
+      }
+    },
+    // 获取举报列表
+    getReportLis () {
+      let page = {}
+      let postParams = {}
+      page.pageNo = this.pageNo
+      page.pageSize = this.pageSize
+      postParams.reason = this.reason
+      postParams.state = this.state
+      this.$store.dispatch('reportPage', {
+        page: page,
+        data: postParams
+      })
+        .then((res) => {
+          if (res.code === 1) {
+            this.tableData = res.data.records
+            this.total = res.data.total
+          }
+        })
+    },
+    // 举报处理
+    reporthandle (e) {
+      let postParams = {}
+      postParams.shareId = this.shareId
+      postParams.state = e
+      this.$store.dispatch('reportDeal', {
+        url: this.reportId,
+        data: postParams
+      })
+        .then(res => {
+          if (res.code === 1) {
+            success(res.message)
+            this.getReportLis()
+            this.reportDialog = false
+          }
+        })
+    },
     delPlan () {}
+  },
+  mounted () {
+    this.getReportLis()
   }
 }
 </script>

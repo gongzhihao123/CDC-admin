@@ -86,8 +86,8 @@ export function addGrade (data) {
 }
 
 // 获取年级列表
-export function gradeList (data) {
-  return axios.get('/gradeManage/gradeList/' + data).then((res) => res.data)
+export function gradeList (campusId, section) {
+  return axios.get('/gradeManage/gradeList/' + campusId + '/' + section).then((res) => res.data)
 }
 
 // 编辑班级
@@ -226,7 +226,7 @@ export function offline (url) {
 
 // 删除分享
 export function delShare (url) {
-  return axios.post('/share/share/' + url).then((res) => res.data)
+  return axios.delete('/share/share/' + url).then((res) => res.data)
 }
 
 // 获取活动列表
@@ -252,7 +252,7 @@ export function unShareTop (url) {
 // 举报管理
 // 处理
 export function reportDeal (url, data) {
-  return axios.post('/report/deal/' + url, data).then((res) => res.data)
+  return axios.post('/report/deal/' + url + '?shareId=' + data.shareId + '&state=' + data.state).then((res) => res.data)
 }
 
 // 获取举报列表

@@ -99,6 +99,7 @@ export default {
       campusId: '',
       gradeId: '',
       sections: [],
+      tempSections: [],
       gradeList: [],
       school: {},
       sectionMap: ['', '小学', '初中', '高中']
@@ -174,32 +175,6 @@ export default {
           }
         })
     },
-    // // 获取年级列表
-    // getGradeList () {
-    //   this.$store.dispatch('gradeList', this.campusId)
-    //     .then((res) => {
-    //       if (res.code === 1) {
-    //         this.gradeList = this.mergeGrounp(res.data)
-    //       }
-    //     })
-    // },
-    // // 获取校区列表
-    // async getCampusList () {
-    //   await this.$store.dispatch('campusList', this.schoolId)
-    //     .then((res) => {
-    //       if (res.code === 1) {
-    //         res.data.forEach(item => {
-    //           if (item.sections !== null) {
-    //             item.sections = item.sections.split(',')
-    //           } else {
-    //             item.sections = []
-    //           }
-    //         })
-    //         this.campusList = res.data
-    //         this.campusId = res.data[0].id
-    //       }
-    //     })
-    // },
     async init () {
       // 生成学校
       await this.initSchool()
@@ -209,8 +184,10 @@ export default {
         let campus = this.school.campusList[cam]
         // 学段
         await this.initSection(campus)
+        // todo
         await this.getGradeClassData(campus)
       }
+      console.log(this.school)
       this.$forceUpdate()
     },
     initSchool () {
@@ -236,37 +213,46 @@ export default {
         campus.sectionList.push(sec)
       })
     },
-    async getGradeClassData (campus) {
-      let gradeList = []
-      await this.$store.dispatch('gradeList', campus.id)
-        .then((res) => {
-          if (res.code === 1) {
-            gradeList = res.data
-          }
-        })
-      let classList = []
-      await this.$store.dispatch('classList', campus.id)
-        .then((res) => {
-          if (res.code === 1) {
-            classList = res.data
-          }
-        })
-      campus.sectionList.forEach(section => {
-        section.gradeList = []
-        gradeList.forEach(grade => {
-          if (section.id * 1 === grade.section * 1) {
-            section.gradeList.push(grade)
-          }
-          classList.forEach(clazz => {
-            if (!grade.classList) {
-              grade.classList = []
-            }
-            if (grade.id === clazz.gradeId) {
-              grade.classList.push(clazz)
-            }
+    getGradeClassData (campus) {
+      let sectionList = campus.sectionList
+      if (sectionList) {
+        sectionList.forEach(async (section) => {
+          let gradeList = []
+          await this.$store.dispatch('gradeList', {
+            campusId: campus.id,
+            section: section.id
+          })
+            .then((res) => {
+              if (res.code === 1) {
+                gradeList = res.data
+              }
+            })
+          let classList = []
+          await this.$store.dispatch('classList', campus.id)
+            .then((res) => {
+              if (res.code === 1) {
+                classList = res.data
+              }
+            })
+          campus.sectionList.forEach(section => {
+            section.gradeList = []
+            gradeList.forEach(grade => {
+              console.log(section)
+              if (section.id * 1 === grade.section * 1) {
+                section.gradeList.push(grade)
+              }
+              classList.forEach(clazz => {
+                if (!grade.classList) {
+                  grade.classList = []
+                }
+                if (grade.id === clazz.gradeId) {
+                  grade.classList.push(clazz)
+                }
+              })
+            })
           })
         })
-      })
+      }
     }
   },
   async created () {

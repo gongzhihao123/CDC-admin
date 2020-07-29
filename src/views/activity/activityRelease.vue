@@ -50,14 +50,14 @@
           </el-date-picker> -->
         </li>
         <li>
-          <span>活动宣传图片:</span>
+          <span>活动logo:</span>
           <el-upload
-            :class="{uoloadSty:showBtnImg,disUoloadSty:noneBtnImg}"
+            :class="{uoloadSty:showBtnImg1,disUoloadSty:noneBtnImg1}"
             :action="uploadPath"
             list-type="picture-card"
-            :on-change="imgChange"
-            :on-success="uploadSuccess"
-            :file-list="fileList"
+            :on-change="imgChange1"
+            :on-success="uploadSuccess1"
+            :file-list="fileList1"
             :limit="1"
             :auto-upload="true">
               <i slot="default" class="el-icon-plus"></i>
@@ -69,19 +69,95 @@
                 <span class="el-upload-list__item-actions">
                   <span
                     class="el-upload-list__item-preview"
-                    @click="handlePictureCardPreview(file)"
+                    @click="handlePictureCardPreview1(file)"
                   >
                     <i class="el-icon-zoom-in"></i>
                   </span>
                   <span
                     class="el-upload-list__item-delete"
-                    @click="handleRemove(file)"
+                    @click="handleRemove1(file)"
                   >
                     <i class="el-icon-delete"></i>
                   </span>
                 </span>
               </div>
-              <div class="el-upload__tip" slot="tip">建议上传图片尺寸为276*190</div>
+              <div class="el-upload__tip" slot="tip">建议上传图片尺寸为690*388</div>
+          </el-upload>
+          <el-dialog :visible.sync="activityDialog" class="activityReleaseDialog">
+            <img width="100%" :src="activityImg" alt="">
+          </el-dialog>
+        </li>
+        <li>
+          <span>活动主题:</span>
+          <el-upload
+            :class="{uoloadSty:showBtnImg2,disUoloadSty:noneBtnImg2}"
+            :action="uploadPath"
+            list-type="picture-card"
+            :on-change="imgChange2"
+            :on-success="uploadSuccess2"
+            :file-list="fileList2"
+            :limit="1"
+            :auto-upload="true">
+              <i slot="default" class="el-icon-plus"></i>
+              <div slot="file" slot-scope="{file}">
+                <img
+                  class="el-upload-list__item-thumbnail"
+                  :src="file.url" alt=""
+                >
+                <span class="el-upload-list__item-actions">
+                  <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview2(file)"
+                  >
+                    <i class="el-icon-zoom-in"></i>
+                  </span>
+                  <span
+                    class="el-upload-list__item-delete"
+                    @click="handleRemove2(file)"
+                  >
+                    <i class="el-icon-delete"></i>
+                  </span>
+                </span>
+              </div>
+              <div class="el-upload__tip" slot="tip">建议上传图片尺寸为690*388</div>
+          </el-upload>
+          <el-dialog :visible.sync="activityDialog" class="activityReleaseDialog">
+            <img width="100%" :src="activityImg" alt="">
+          </el-dialog>
+        </li>
+        <li>
+          <span>我的活动:</span>
+          <el-upload
+            :class="{uoloadSty:showBtnImg3,disUoloadSty:noneBtnImg3}"
+            :action="uploadPath"
+            list-type="picture-card"
+            :on-change="imgChange3"
+            :on-success="uploadSuccess3"
+            :file-list="fileList3"
+            :limit="1"
+            :auto-upload="true">
+              <i slot="default" class="el-icon-plus"></i>
+              <div slot="file" slot-scope="{file}">
+                <img
+                  class="el-upload-list__item-thumbnail"
+                  :src="file.url" alt=""
+                >
+                <span class="el-upload-list__item-actions">
+                  <span
+                    class="el-upload-list__item-preview"
+                    @click="handlePictureCardPreview3(file)"
+                  >
+                    <i class="el-icon-zoom-in"></i>
+                  </span>
+                  <span
+                    class="el-upload-list__item-delete"
+                    @click="handleRemove3(file)"
+                  >
+                    <i class="el-icon-delete"></i>
+                  </span>
+                </span>
+              </div>
+              <div class="el-upload__tip" slot="tip">建议上传图片尺寸为134*76</div>
           </el-upload>
           <el-dialog :visible.sync="activityDialog" class="activityReleaseDialog">
             <img width="100%" :src="activityImg" alt="">
@@ -105,14 +181,26 @@ export default {
       activityType: 1,
       activityTitle: '',
       columnCheck: [],
-      activityImg: '',
+      activityImg1: '',
+      activityImg2: '',
+      activityImg3: '',
       activityDialog: false,
-      imgUrl: '',
+      imgUrl1: '',
+      imgUrl2: '',
+      imgUrl3: '',
       // 上传参数
-      fileList: [],
-      showBtnImg: true,
-      noneBtnImg: false,
-      limitCountImg: 1, // 上传图片的最大数量
+      fileList1: [],
+      fileList2: [],
+      fileList3: [],
+      showBtnImg1: true,
+      showBtnImg2: true,
+      showBtnImg3: true,
+      noneBtnImg1: false,
+      noneBtnImg2: false,
+      noneBtnImg3: false,
+      limitCountImg1: 1, // 上传图片的最大数量
+      limitCountImg2: 1, // 上传图片的最大数量
+      limitCountImg3: 1, // 上传图片的最大数量
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -152,7 +240,7 @@ export default {
   methods: {
     // 上传操作
     // 删除上传图片
-    handleRemove (file, fileList) {
+    handleRemove1 (file, fileList) {
       let url = ''
       if (this.isAdd) {
         url = file.response.data.filepath
@@ -163,31 +251,95 @@ export default {
         .then((res) => {
           if (res.code === 1) {
             success(res.message)
-            this.fileList = []
+            this.fileList1 = []
             // console.log(fileList.length >= this.limitCountImg)
-            this.noneBtnImg = false
-            this.imgUrl = ''
+            this.noneBtnImg1 = false
+            this.imgUrl1 = ''
           }
         })
     },
-    uploadSuccess (res) {
+    uploadSuccess1 (res) {
       if (res.data.resultCode === 1) {
         success(res.data.result)
       }
-      this.imgUrl = res.data.filepath
+      this.imgUrl1 = res.data.filepath
     },
-    handlePictureCardPreview (file) {
-      this.activityImg = file.url
+    handlePictureCardPreview1 (file) {
+      this.activityImg1 = file.url
       this.activityDialog = true
     },
-    imgChange (file, fileList) {
-      this.noneBtnImg = fileList.length >= this.limitCountImg
+    imgChange1 (file, fileList) {
+      this.noneBtnImg1 = fileList.length >= this.limitCountImg1
+    },
+    handleRemove2 (file, fileList) {
+      let url = ''
+      if (this.isAdd) {
+        url = file.response.data.filepath
+      } else {
+        url = file.url.replace(window.location.origin + '/activity/common/attachment?filepath=', '')
+      }
+      this.$store.dispatch('delUploadFile', { filepath: url })
+        .then((res) => {
+          if (res.code === 1) {
+            success(res.message)
+            this.fileList2 = []
+            // console.log(fileList.length >= this.limitCountImg)
+            this.noneBtnImg2 = false
+            this.imgUrl2 = ''
+          }
+        })
+    },
+    uploadSuccess2 (res) {
+      if (res.data.resultCode === 1) {
+        success(res.data.result)
+      }
+      this.imgUrl2 = res.data.filepath
+    },
+    handlePictureCardPreview2 (file) {
+      this.activityImg2 = file.url
+      this.activityDialog = true
+    },
+    imgChange2 (file, fileList) {
+      this.noneBtnImg2 = fileList.length >= this.limitCountImg2
+    },
+    handleRemove3 (file, fileList) {
+      let url = ''
+      if (this.isAdd) {
+        url = file.response.data.filepath
+      } else {
+        url = file.url.replace(window.location.origin + '/activity/common/attachment?filepath=', '')
+      }
+      this.$store.dispatch('delUploadFile', { filepath: url })
+        .then((res) => {
+          if (res.code === 1) {
+            success(res.message)
+            this.fileList3 = []
+            // console.log(fileList.length >= this.limitCountImg)
+            this.noneBtnImg3 = false
+            this.imgUrl3 = ''
+          }
+        })
+    },
+    uploadSuccess3 (res) {
+      if (res.data.resultCode === 1) {
+        success(res.data.result)
+      }
+      this.imgUrl3 = res.data.filepath
+    },
+    handlePictureCardPreview3 (file) {
+      this.activityImg3 = file.url
+      this.activityDialog = true
+    },
+    imgChange3 (file, fileList) {
+      this.noneBtnImg3 = fileList.length >= this.limitCountImg3
     },
     confirmDefine () {
       if (this.isAdd) {
         // 添加
         this.$store.dispatch('addActivity', {
-          img: this.imgUrl,
+          carouselImg: this.imgUrl1,
+          entranceImg: this.imgUrl2,
+          miniImg: this.imgUrl3,
           startTime: this.formdate[0],
           endTime: this.formdate[1],
           title: this.activityTitle,

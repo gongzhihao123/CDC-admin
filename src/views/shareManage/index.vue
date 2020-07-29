@@ -26,13 +26,13 @@
       <ul>
         <li v-for="(item, index) in shareList" :key="index">
           <div class="share-content">
-            <img src="./../../assets/images/timg.jpg" alt="">
+            <img :src="item.wechatUserImg" alt="">
             <div class="share-info">
-              <h2>{{ item.name }}</h2>
+              <h2>{{ item.studentName }}</h2>
               <p>{{ item.content }}</p>
-              <img src="./../../assets/images/timg.jpg" alt="">
+              <img v-if="item.contentImg" :src="readPath + item.contentImg" alt="">
               <dl>
-                <dt>2020-06-11 13:55:50</dt>
+                <dt>{{ item.createdTime[0] + '-' + item.createdTime[1] + '-' + item.createdTime[2] + ' ' + item.createdTime[3] + ':' + item.createdTime[4] + ':' +item.createdTime[5]}}</dt>
                 <dd @click="like(item, index)">
                   <img v-if="!item.likeFlag" :src="item.img" alt="">
                   <img v-else :src="item.activeImg" alt="">
@@ -41,10 +41,10 @@
             </div>
           </div>
           <i>
-            <el-button size="small" type="primary" @click="shareTop(item.id)">置顶</el-button>
-            <el-button size="small" type="primary" @click="unShareTop(item.id)">取消置顶</el-button>
-            <el-button size="small" type="primary" @click="shareOffline(item.id)">下架</el-button>
-            <el-button size="small" type="primary" @click="shareUnOffline(item.id)">取消下架</el-button>
+            <el-button v-if="!item.topFlag" size="small" type="primary" @click="shareTop(item.id)">置顶</el-button>
+            <el-button v-if="item.topFlag" size="small" type="primary" @click="unShareTop(item.id)">取消置顶</el-button>
+            <el-button v-if="item.state * 1 === 1" size="small" type="primary" @click="shareOffline(item.id)">下架</el-button>
+            <el-button v-if="item.state * 1 === 2" size="small" type="primary" @click="shareUnOffline(item.id)">取消下架</el-button>
             <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(item.id)'>
               <el-button slot="reference" size="small" type="danger">删除</el-button>
             </el-popconfirm>
@@ -56,7 +56,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[8, 10, 15, 20]"
+        :page-sizes="[6, 10, 15, 20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -79,6 +79,12 @@ export default {
       total: ''
     }
   },
+  computed: {
+    readPath () {
+      const routePath = '/activity'
+      return window.location.origin + routePath + '/common/attachment?filepath='
+    }
+  },
   methods: {
     like (item, index) {
       console.log(index)
@@ -91,11 +97,15 @@ export default {
     },
     // 更改时间
     changeTime (e) {
-      console.log(e)
+      this.time = e
+      this.getShareList()
     },
     // 选择活动
     changeActivity (e) {
-      console.log(e)
+      // let arr = this.allActivity.filter(item => item.id * 1 === e * 1)
+      // this.activityId = arr[0].id
+      this.activityId = e
+      this.getShareList()
     },
     // 下架
     shareOffline (id) {

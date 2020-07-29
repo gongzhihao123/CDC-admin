@@ -19,7 +19,7 @@
           <li>
             <p>年级：</p>
             <el-radio-group v-model="selectTepGrade" @change="changeGrade">
-              <el-radio v-for="(tepGrade, index) in tepGradeList" :key="index" :label="tepGrade.id">{{ tepGrade.name }}</el-radio>
+              <el-radio v-for="(tepGrade, index) in gradeList" :key="index" :label="tepGrade.id">{{ tepGrade.name }}</el-radio>
             </el-radio-group>
           </li>
         </ul>
@@ -179,12 +179,13 @@ export default {
           this.sectionList = arr[i].sections
         }
       }
-      this.getGradeList(e)
     },
     // 选择学段
-    changeSection (e) {
-      this.tepGradeList = this.gradeList.filter(item => item.section * 1 === e * 1)
-      this.gradeSelectList = this.tepGradeList
+    async changeSection (e) {
+      this.section = e
+      await this.getGradeList()
+      // this.tepGradeList = this.gradeList.filter(item => item.section * 1 === e * 1)
+      // this.gradeSelectList = this.tepGradeList
     },
     // 选择年级
     changeGrade (e) {
@@ -252,8 +253,14 @@ export default {
         })
     },
     // 获取年级列表
-    async getGradeList (id) {
-      this.$store.dispatch('gradeList', id)
+    async getGradeList () {
+      let getParam = {}
+      getParam.campusId = this.campusId
+      getParam.section = this.section
+      this.$store.dispatch('gradeList', {
+        campusId: this.campusId,
+        section: this.section
+      })
         .then((res) => {
           if (res.code === 1) {
             this.gradeList = res.data

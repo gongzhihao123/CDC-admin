@@ -19,7 +19,6 @@
             border
             style="width: 100%">
             <el-table-column
-              prop="date"
               label="教育ID"
               width="180">
               <template slot-scope='scope'>

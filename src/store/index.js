@@ -168,7 +168,7 @@ export default new Vuex.Store({
     },
     // 获取年级列表
     async gradeList ({ commit }, data) {
-      const res = await server.gradeList(data)
+      const res = await server.gradeList(data.campusId, data.section)
       if (res.code === 1) {
         return res
       } else {
@@ -433,7 +433,7 @@ export default new Vuex.Store({
     },
     // 置顶
     async shareTop ({ commit }, data) {
-      const res = await server.offline(data)
+      const res = await server.shareTop(data)
       if (res.code === 1) {
         return res
       } else {
@@ -442,7 +442,7 @@ export default new Vuex.Store({
     },
     // 取消置顶
     async unShareTop ({ commit }, data) {
-      const res = await server.unoffline(data)
+      const res = await server.unShareTop(data)
       if (res.code === 1) {
         return res
       } else {
@@ -452,6 +452,34 @@ export default new Vuex.Store({
     // 删除分享
     async delShare ({ commit }, data) {
       const res = await server.delShare(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 举报管理
+    // 处理
+    async reportDeal ({ commit }, data) {
+      const res = await server.reportDeal(data.url, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取举报列表
+    async reportPage ({ commit }, data) {
+      const res = await server.reportPage(data.page, data.data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取分享
+    async reportShare ({ commit }, data) {
+      const res = await server.reportShare(data)
       if (res.code === 1) {
         return res
       } else {
