@@ -114,7 +114,7 @@
           <ul class="report-info">
             <li>举报原因：{{ reportContent.reason === 1 ? '色情低俗' : reportContent.reason === 2 ? '政治敏感' : reportContent.reason === 3 ? '广告垃圾信息' : reportContent.reason === 4 ? '病毒木马' : '其他' }}</li>
             <li>举报人：{{reportContent.studentName}}</li>
-            <li>处理结果：{{ reportContent.state === 1 ? '未处理' : reportContent.state === 2 ? '忽略' : reportContent.state === 3 ? '下架' : '删除' }}</li>
+            <li>处理结果：{{ reportContent.state === 0 ? '未处理' : reportContent.state === 1 ? '忽略' : reportContent.state === 2 ? '下架' : '删除' }}</li>
             <li v-if="reportContent.dealTime">处理时间：{{ reportContent.dealTime[0] + '-' + reportContent.dealTime[1] + '-' + reportContent.dealTime[2] + ' ' + reportContent.dealTime[3] + ':'
                   + reportContent.dealTime[4] + ':' +reportContent.dealTime[5]}}</li>
           </ul>
@@ -377,6 +377,11 @@ export default {
               margin: 3px 70px;
             }
           }
+        }
+      }
+      .el-dialog__footer {
+        .el-button {
+          padding: 10px 14px;
         }
       }
     }
