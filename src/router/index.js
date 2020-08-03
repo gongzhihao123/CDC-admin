@@ -76,7 +76,7 @@ const routes = [
         path: '/studentUser',
         name: 'studentUser',
         component: studentUser,
-        meta: { hidden: true, title: '学生用户' }
+        meta: { hidden: false, title: '学生用户' }
       }
     ]
   },
