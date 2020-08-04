@@ -238,7 +238,7 @@ export default {
           > img {
             display: inline-block;
             width: 60px;
-            height: 60px;
+            // height: 60px;
             margin-right: 10px;
             border-radius: 60px;
           }

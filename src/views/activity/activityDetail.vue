@@ -9,8 +9,8 @@
         <ul>
           <li>
             <p>创建时间：</p>
-            <span v-if="this.activityDetail">{{ activityDetail.createdTime[0] + '-' + activityDetail.createdTime[1] + '-' + activityDetail.createdTime[2] + ' '
-                  + activityDetail.createdTime[3] + ':' + activityDetail.createdTime[4] + ':' + activityDetail.createdTime[5] }}</span>
+            <!-- <span v-if="this.activityDetail">{{ activityDetail.createdTime[0] + '-' + activityDetail.createdTime[1] + '-' + activityDetail.createdTime[2] + ' '
+                  + activityDetail.createdTime[3] + ':' + activityDetail.createdTime[4] + ':' + activityDetail.createdTime[5] }}</span> -->
           </li>
           <li>
             <p>状态：</p>
@@ -28,7 +28,7 @@
           <dt>起止时间：</dt>
           <dd>2020-06-26 到 2020-08-20 </dd>
         </dl>
-        <SCREEN @getSchool="getSchool"></SCREEN>
+        <SCREEN @schoolInfo='getSchoolInfo'></SCREEN>
         <ul>
           <li>参与人数：<span>203</span></li>
           <li>打卡总数：<span>203</span></li>
@@ -81,6 +81,7 @@ export default {
       tableData: [],
       // 分页
       currentPage: 5,
+      schoolInfo: {},
       total: ''
     }
   },
@@ -89,18 +90,19 @@ export default {
   },
   methods: {
     // 筛选
-    getSchool (data) {
+    getSchoolInfo (data) {
       console.log('ss', data)
+      this.$on('schoolInfo', data)
     },
     backActivityManage () {
       this.$router.go(-1)
     }
   },
   mounted () {
-    if (this.$route.query.data) {
-      this.activityDetail = this.$route.query.data
-      console.log(this.activityDetail)
-    }
+    // if (this.$route.query.data) {
+    //   this.activityDetail = this.$route.query.data
+    //   console.log(this.activityDetail)
+    // }
   }
 }
 </script>

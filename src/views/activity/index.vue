@@ -135,7 +135,7 @@ export default {
     },
     // 查看统计跳转
     viewStatistics (data) {
-      this.$router.push({ path: '/activityDetail', query: { data: data } })
+      this.$router.push({ path: '/activityDetail', query: { } })
     },
     getActivityList () {
       this.$store.dispatch('activityList', {
