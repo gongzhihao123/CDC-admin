@@ -69,7 +69,7 @@
             width="340">
             <template slot-scope="scope">
               <el-button type="primary" size="small" @click="getChannelArticleList(scope.row.id)">选择栏目</el-button>
-              <el-button size="small" @click="navArticleDetail(scope.row.id)">查看</el-button>
+              <!-- <el-button size="small" @click="navArticleDetail(scope.row.id)">查看</el-button> -->
               <el-button type="primary" size="small" @click="navReleaseOrEdit(2, scope.row)">编辑</el-button>
               <el-popconfirm title="您确定要删除此项目吗？" @onConfirm='delPlan(scope.row.id)'>
                 <el-button slot="reference" size="small" type="danger">删除</el-button>
@@ -81,7 +81,7 @@
           v-if="total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage"
+          :current-page="pageNo"
           :page-sizes="[10, 15, 20, 25]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"

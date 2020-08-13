@@ -60,7 +60,7 @@
         v-if="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="pageNo"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -143,7 +143,6 @@ export default {
       state: '0',
       reason: '',
       // 分页
-      currentPage: 5,
       reportId: '',
       shareId: '',
       total: '',

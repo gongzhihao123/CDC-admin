@@ -55,7 +55,7 @@
         v-if="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="pageNo"
         :page-sizes="[6, 10, 15, 20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -75,7 +75,7 @@ export default {
       shareList: [],
       currentPage: 1,
       pageNo: 1,
-      pageSize: 8,
+      pageSize: 6,
       total: ''
     }
   },
@@ -96,9 +96,10 @@ export default {
       }
     },
     // 更改时间
-    changeTime (e) {
+    async changeTime (e) {
+      this.pageNo = 1
       this.time = e
-      this.getShareList()
+      await this.getShareList()
     },
     // 选择活动
     changeActivity (e) {
@@ -177,14 +178,14 @@ export default {
       this.getShareList()
     },
     // 获取分享列表
-    getShareList () {
+    async getShareList () {
       let page = {}
       page.pageNo = this.pageNo
       page.pageSize = this.pageSize
       let postParms = {}
       postParms.activityId = this.activityScreen
       postParms.date = this.time
-      this.$store.dispatch('sharePage', {
+      await this.$store.dispatch('sharePage', {
         page: page,
         data: postParms
       })

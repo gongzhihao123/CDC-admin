@@ -50,7 +50,7 @@ export default {
   right: 0;
   .home-container {
     background: #F2F2F2;
-    height: -webkit-fill-available;
+    min-height: 100%;
     .homeHeader {
       height: 50px;
       width: 100%;

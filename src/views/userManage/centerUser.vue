@@ -45,7 +45,7 @@
         v-if="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="pageNo"
         :page-sizes="[10, 15, 20, 25]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -86,7 +86,6 @@ export default {
       // 主体
       tableData: [],
       // 分页
-      currentPage: 1,
       pageNo: 1,
       pageSize: 10,
       total: '',
