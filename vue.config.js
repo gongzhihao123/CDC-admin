@@ -25,8 +25,8 @@ module.exports = {
     proxy: {
       '/activity': {
         /* 目标代理服务器地址 */
-        target: 'https://jk.meetyuu.com',
-        // target: 'http://58.133.87.119:9001',
+        // target: 'https://jk.meetyuu.com',
+        target: 'http://58.133.87.118:9001',
         ws: true,
         /* 允许跨域 */
         changeOrigin: true,

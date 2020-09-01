@@ -394,6 +394,52 @@ export default new Vuex.Store({
         error(res.message)
       }
     },
+    // 统计管理
+    // 获取活动学校列表（统计）
+    async actvitySchoolList ({ commit }, data) {
+      const res = await server.actvitySchoolList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取统计校区列表
+    async totalCampusList ({ commit }, data) {
+      const res = await server.totalCampusList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取统计年级列表
+    async totalGradeList ({ commit }, data) {
+      const res = await server.totalGradeList(data.campusId, data.section)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取统计班级列表
+    async totalClassList ({ commit }, data) {
+      const res = await server.totalClassList(data)
+      if (res.code === 1) {
+        return res
+      } else {
+        error(res.message)
+      }
+    },
+    // 获取活动参与情况统计列表
+    async totalActivitySitua ({ commit }, data) {
+      const res = await server.totalActivitySitua(data)
+      if (res.code === 1) {
+        return res.data
+      } else {
+        error(res.message)
+      }
+    },
     // 分享管理
     // 获取进行中活动列表
     async shareActivityList ({ commit }, data) {

@@ -213,6 +213,32 @@ export function delActivity (data) {
   return axios.delete('/activityManage/activity/' + data).then((res) => res.data)
 }
 
+// 活动统计
+// 获取校区（无分页）
+export function actvitySchoolList () {
+  return axios.get('/pom/schoolList').then((res) => res.data)
+}
+
+// 获取校区列表(统计)
+export function totalCampusList (data) {
+  return axios.get('/pom/campusList/' + data).then((res) => res.data)
+}
+
+// 获取年级列表(统计)
+export function totalGradeList (campusId, section) {
+  return axios.get('/pom/gradeList/' + campusId + '/' + section).then((res) => res.data)
+}
+
+// 获取班级列表
+export function totalClassList (data) {
+  return axios.get('/pom/classList/' + data).then((res) => res.data)
+}
+
+// 获取活动参与情况统计列表
+export function totalActivitySitua (data) {
+  return axios.get('/pom/activityStudent/' + data.activityId + '/' + data.pageNo + '/' + data.pageSize, { params: data.getParams }).then((res) => res.data)
+}
+
 // 分享管理
 // 获取进行中的活动列表
 export function shareActivityList () {
