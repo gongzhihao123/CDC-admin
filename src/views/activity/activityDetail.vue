@@ -38,6 +38,7 @@
         <el-table
           :data="tableData"
           border
+          stripe="true"
           style="width: 100%">
           <el-table-column
             prop="rank"
@@ -48,14 +49,13 @@
             label="参与人员">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="所属学校">
+            label="所属学校"
+            width="280">
             <template slot-scope="scope">
               <span>{{ scope.row.schoolName + scope.row.campusName }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="address"
             label="年级班级">
             <template slot-scope="scope">
               <span>{{ scope.row.gradeName + scope.row.className }}</span>
@@ -243,6 +243,11 @@ export default {
             color: #13D071;
             font-weight: 600;
           }
+        }
+      }
+      .el-table {
+        .cell {
+          text-align: center;
         }
       }
     }
